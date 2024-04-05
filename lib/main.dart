@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "SafeWalk",
       theme: customeTheme(context),
-      home: DirectionPage(),//const MainView(),
+      home: MyDraggableSheet(), //const MainView(),
     );
   }
 }
