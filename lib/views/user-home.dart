@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.black,
                           size: 40.0,),
               // hintStyle: MaterialStatePropertyAll(optionStyle),
-              // hintText: "Where to?",
+              hintText: "Where to?",
             ),
           ),
           Center(
