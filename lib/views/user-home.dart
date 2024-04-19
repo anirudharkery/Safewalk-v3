@@ -1,4 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:footer/footer.dart';
+import 'package:footer/footer_view.dart';
 
 void main() => runApp(const UserHome());
 
@@ -30,12 +34,23 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+  List<Widget> _widgetOptions = <Widget>[
     Padding(
       padding: EdgeInsets.all(40),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,        
-        children: [
+        children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: 20),
             child: SearchBar(
@@ -48,6 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Center(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Padding(
                   padding: EdgeInsets.only(bottom: 15),
@@ -60,7 +77,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 20),
-                        child: Text('Choose a saved place'),
+                        child: Center(
+                          child: Text('Choose a saved place',
+                          style: TextStyle(
+                          fontSize: 16.0,
+                          color: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .color, //find a better way
+                                            ),),
+                        ),
                       )
                     ],
                   ),
@@ -76,11 +102,16 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(left: 20),
-                        child: Text('Set Destination on Map'),
+                        child:
+                        Text('Set Destination on Map',
+                         style: TextStyle(
+                          fontSize: 16.0,
+                          color: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .color, //find a better way
+                                            ),),
                       )
-                      // Text(
-                      //   'Set Destination on Map',
-                      // ),
                     ],
                   ),
                 ),
@@ -90,11 +121,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       Text(
                         'Around You',
-                        style: optionStyle,
+                        style: TextStyle(
+                    fontSize: 30.0,
+                    color: Theme.of(context).textTheme.titleLarge!.color, //find a better way
+                  ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 10),
+                          // child: Container(),
                         )
                     ],
                   ),
-                )
+                ),  
                 // Padding(
                 //   padding: EdgeInsets.only(bottom: 10),
                 //   child: Icon(
@@ -152,29 +190,91 @@ class _MyHomePageState extends State<MyHomePage> {
       style: optionStyle,
     ),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      // body: const Center(child: Column(children: [SearchBar()],),),
-      body:  
-      Column(
-        children: [
-          Center(
-            child: _widgetOptions[_selectedIndex],
-            // child: SearchBarApp(),
+      body: FooterView(
+        // ignore: sort_child_properties_last
+        children:<Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top:0),
+            child: Center(
+              child: _widgetOptions[_selectedIndex],
+            ),
           ),
-          // Text("data"),
         ],
+        footer: Footer(
+              // ignore: sort_child_properties_last
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children:<Widget>[
+                  Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          height: 60.0,
+                          width: 45.0,
+                          child:const Column(
+                            children: [
+                              Icon(
+                                Icons.message,
+                                color: Colors.black,
+                                size: 30.0,
+                              ),
+                              Text("Chat")
+                            ],
+                          )
+                        ),
+                        Container(
+                          height: 60.0,
+                          width: 45.0,
+                          child:const Column(
+                            children: [
+                              Icon(
+                                Icons.call,
+                                color: Colors.black,
+                                size: 30.0,
+                              ),
+                              Text("Call")
+                            ],
+                          )
+                        ),
+                        Container(
+                          height: 60.0,
+                          width: 45.0,
+                          child:const Column(
+                            children: [
+                              Icon(
+                                Icons.person,
+                                color: Colors.black,
+                                size: 30.0,
+                              ),
+                              Text("Profile")
+                            ],
+                          )
+                        ),
+                        Container(
+                          height: 60.0,
+                          width: 45.0,
+                          child:const Column(
+                            children: [
+                              Icon(
+                                Icons.leaderboard,
+                                color: Colors.black,
+                                size: 30.0,
+                              ),
+                              Text("CS")
+                            ],
+                          )
+                        ),
+                      ],
+                    ),
+                  ),
+                ]
+              ),
+              padding: EdgeInsets.all(5.0),
+          )
       ),
       drawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
