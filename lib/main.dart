@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:safewalk/views/walker/map_view.dart';
 import './views/main_view.dart';
 import './views/walker/walker_view.dart';
 
