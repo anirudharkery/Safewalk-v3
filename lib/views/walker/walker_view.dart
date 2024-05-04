@@ -15,9 +15,12 @@ class MyDraggableSheet extends StatefulWidget {
 class _MyDraggableSheetState extends State<MyDraggableSheet> {
   final _sheet = GlobalKey();
   final _controller = DraggableScrollableController();
+  Widget? _sheetWidget;
+
   @override
   void initState() {
     super.initState();
+    _sheetWidget = Sheet(sheet: _sheet, controller: _controller);
     _controller.addListener(_onChanged);
   }
 
@@ -151,11 +154,10 @@ class _MyDraggableSheetState extends State<MyDraggableSheet> {
               ),
             ),
           ),
-          Sheet(sheet: _sheet, controller: _controller).animate().slide(
+          _sheetWidget!.animate().slide(
                 duration: const Duration(seconds: 2),
                 end: Offset.zero,
                 begin: const Offset(0.0, 1.0),
-                //curve: Curves.easeIn,
               ),
         ]);
       }),

@@ -22,6 +22,10 @@ class _SheetState extends State<Sheet> {
 
   @override
   Widget build(BuildContext context) {
+    //print("Map View Build");
+
+    LocationStream returnStream() => (LocationStream());
+
     return DraggableScrollableSheet(
       key: widget.sheet,
       initialChildSize: 0.1,
@@ -47,7 +51,7 @@ class _SheetState extends State<Sheet> {
                 children: <Widget>[
                   // to get location distance data from Streams.
                   StreamBuilder(
-                      stream: _locationStream!.stream,
+                      stream: returnStream().stream, //_locationStream!.stream,
                       builder: (context, snapshot) {
                         switch (snapshot.connectionState) {
                           case ConnectionState.waiting:
