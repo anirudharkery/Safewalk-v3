@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "/Users/nilkumarpatel/Desktop/safewalk/linux"
+  "cmake.sourceDirectory": "/Users/nilkumarpatel/Desktop/safewalk/linux",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
