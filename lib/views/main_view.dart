@@ -1,43 +1,51 @@
 import 'package:flutter/material.dart';
+//import './home_view.dart';
+import './login_view.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
+      
       body: Center(
+        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start, 
           crossAxisAlignment: CrossAxisAlignment.center, 
           children: [ 
+            SizedBox(height: 50),
             //SafeWalkSCU Logo
             Padding(
               padding: EdgeInsets.only(top: 152.0), 
-              child: Image.asset(
-                "./assets/images/logo_red.png",
-                height: 250,
-                width: 250,
+              child: Column(
+                children: [
+                  Image.asset(
+                    "./assets/images/logo_redcircle.png",
+                    height: 129,
+                    width: 124,
+                  ),
+                  //SizedBox(height: 20),
+                  Text(
+                    "SafeWalkSCU",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                      fontStyle: FontStyle.normal,
+                      letterSpacing: 0.1,
+                      fontFamily: "Inter",
+                    ),
+                  )
+                ]
               ),
             ),
 
-            //Safewalk Text
-            //
-            //
-            Text(
-              "SafeWalkSCU",
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-                fontWeight: FontWeight.w800,
-                fontStyle: FontStyle.normal,
-                letterSpacing: 1,
-                fontFamily: "Inter",
-              ),
-            ),
-            SizedBox(height: 20),
+            
 
+
+            SizedBox(height: 75),
             //Column of Buttons
             //
             //
@@ -49,37 +57,28 @@ class MainView extends StatelessWidget {
                   //Sign in with Google Button
                   //
                   //
-                  SizedBox(
-                    width: 345,
-                    height: 83,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: Text(
-                        "Sign In with Google",
-                        style: TextStyle(
-                          fontSize: 25,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: 1,
-                          fontFamily: "Inter",
-                        ),
+                 GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginView()),
+                      );
+                    },
+                    child: SizedBox(
+                      width: 345,
+                      height: 83,
+                      child: Image.asset(
+                        "./assets/images/signin_google.png", 
+                        fit: BoxFit.contain, // Adjust how the image fits within the button
                       ),
                     ),
                   ),
-
                   //Dispatcher Button
                   //
                   //
                   SizedBox(height: 20),
                   SizedBox(
-                    width: 345,
+                    width: 334,
                     height: 74,
                     child: ElevatedButton(
                       onPressed: () {},
@@ -87,18 +86,28 @@ class MainView extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
-                      ),
-                      child: Text(
-                        "Call Dispatcher",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: 1,
-                          fontFamily: "Inter",
-                        
-                        ),  
+                      ),    
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.phone_in_talk,
+                            color: Colors.black,
+                            size: 40,
+                          ),
+                          SizedBox(width: 10), // Adjust the spacing between icon and text
+                          Text(
+                            " Call Dispatcher",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: 0.125,
+                              fontFamily: "Inter",
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -108,7 +117,7 @@ class MainView extends StatelessWidget {
                   //
                   SizedBox(height: 20),
                   SizedBox(
-                    width: 345,
+                    width: 334,
                     height: 74,
                     child: ElevatedButton(
                       onPressed: () {},
@@ -118,16 +127,27 @@ class MainView extends StatelessWidget {
                         ),
                         backgroundColor: Colors.black
                       ),
-                      child: Text(
-                        "Call Campus Safety",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: 1,
-                          fontFamily: "Inter",
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            color: Colors.white,
+                            size: 40,
                           ),
+                          SizedBox(width: 10), // Adjust the spacing between icon and text
+                          Text(
+                            " Call Campus Safety",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: 0.125,
+                              fontFamily: "Inter",
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   )
