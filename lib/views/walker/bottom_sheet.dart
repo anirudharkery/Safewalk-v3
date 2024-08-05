@@ -1,37 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dummy_stream.dart';
 
-class Sheet extends StatefulWidget {
+class Sheet extends StatelessWidget {
   Sheet({super.key, required this.sheet, required this.controller});
   DraggableScrollableController controller;
+
   Key sheet;
 
   @override
-  State<Sheet> createState() => _SheetState();
-}
-
-class _SheetState extends State<Sheet> {
-  LocationStream? _locationStream;
-  @override
-  void initState() {
-    // TODO: implement initState
-    //_locationStream = LocationStream();
-    super.initState();
-    _locationStream = LocationStream();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    //print("Map View Build");
-
-    LocationStream returnStream() => (LocationStream());
-
+    LocationStream? _locationStream =
+        LocationStream(); // IT will rebuild the refreshing widget
     return DraggableScrollableSheet(
-      key: widget.sheet,
+      key: sheet,
       initialChildSize: 0.1,
       maxChildSize: 0.95,
       minChildSize: 0.1,
-      controller: widget.controller,
+      controller: controller,
       builder: (BuildContext context, ScrollController scrollController) {
         return DecoratedBox(
           decoration: const BoxDecoration(
@@ -50,49 +37,61 @@ class _SheetState extends State<Sheet> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   // to get location distance data from Streams.
+
                   StreamBuilder(
-                      stream: returnStream().stream, //_locationStream!.stream,
+                      stream: _locationStream!.stream,
                       builder: (context, snapshot) {
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                          case ConnectionState.none:
-                            return const CircularProgressIndicator();
-                          case ConnectionState.active:
-                            return Text(
-                              "${snapshot.data}",
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          case ConnectionState.done:
-                            return const Text(
-                              "Your Walker if here",
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
+                        //print("snapshot ${snapshot.hasData}");
+                        if (!snapshot.hasData) {
+                          return const Text(
+                            "Your Walker if here",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        } else {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.waiting:
+                            case ConnectionState.none:
+                              return const CircularProgressIndicator();
+                            case ConnectionState.active:
+                              return Text(
+                                "${snapshot.data}",
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            case ConnectionState.done:
+                              return const Text(
+                                "Your Walker if here",
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                          }
                         }
                       }),
                   const SizedBox(
                     width: 10,
                   ),
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.directions_walk,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text(
+                  const Text(
                     '1 mile',
                     style: TextStyle(
                       fontSize: 18.0,
@@ -120,12 +119,12 @@ class _SheetState extends State<Sheet> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.chat,
                       color: Colors.white,
                       size: 50,
@@ -135,12 +134,12 @@ class _SheetState extends State<Sheet> {
                     width: 25,
                   ),
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.call,
                       color: Colors.white,
                       size: 50,
@@ -150,12 +149,12 @@ class _SheetState extends State<Sheet> {
                     width: 25,
                   ),
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.textsms_outlined, // campus safty icon
                       color: Colors.white,
                       size: 50,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:safewalk/views/walker/map_view.dart';
-import './views/main_view.dart';
-import './views/walker/walker_view.dart';
+
+import './views/home.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -29,9 +29,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "SafeWalk",
-      theme: customeTheme(context),
-      home: MyDraggableSheet(), //const MainView(),
-    );
+        title: "SafeWalk",
+        theme: customeTheme(context),
+        initialRoute: "/home",
+        routes: {
+          "/home": (context) => const Home(),
+        }
+        //home: const MainView() //const MyDraggableSheet(), //const MainView(),
+        );
   }
 }
