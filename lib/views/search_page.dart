@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:http/http.dart' as http;
@@ -52,6 +53,9 @@ class _SearchPageState extends State<SearchPage> {
               longitude: (startPoint!.longitude + endPoint!.longitude) / 2));
         }
       }
+    } else {
+      print(response.statusCode);
+      print(response.body);
     }
   }
 
@@ -156,11 +160,18 @@ class _SearchPageState extends State<SearchPage> {
                     right: 16,
                     child: ElevatedButton(
                         onPressed: () {
+                          // Validate if start and end points are set
+                          if (startPoint == null || endPoint == null) {
+                            return;
+                          }
                           // Navigate to walker view
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WalkerView(),
+                              builder: (context) => WalkerView(
+                                source: startPoint!,
+                                destination: endPoint!,
+                              ),
                             ),
                           );
                         },

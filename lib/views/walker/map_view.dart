@@ -19,7 +19,6 @@ class MapView extends StatelessWidget {
       },
       osmOption: OSMOption(
         showZoomController: true,
-
         enableRotationByGesture: true,
         zoomOption: const ZoomOption(
           initZoom: 16,
@@ -48,21 +47,11 @@ class MapView extends StatelessWidget {
               //     scale: .3,
               //   ),
               // ),
-            )
-            // directionArrowMarker: MarkerIcon(
-            //   assetMarker: AssetMarker(
-            //     image: AssetImage(
-            //       "asset/taxi.png",
-            //     ),
-            //     scaleAssetImage: 0.25,
-            //   ),
-            // ),
-            ),
+            )),
         roadConfiguration: RoadOption(
           roadColor: Colors.blueAccent,
         ),
         showContributorBadgeForOSM: true,
-        //trackMyPosition: trackingNotifier.value,
         showDefaultInfoWindow: false,
       ),
     );

@@ -10,7 +10,10 @@ import 'package:safewalk/providers/user_location.dart';
 import 'map_view.dart';
 
 class WalkerView extends StatefulWidget {
-  const WalkerView({super.key});
+  const WalkerView(
+      {super.key, required this.source, required this.destination});
+  final GeoPoint source;
+  final GeoPoint destination;
 
   @override
   State<WalkerView> createState() => _WalkerViewState();
@@ -70,6 +73,7 @@ class _WalkerViewState extends State<WalkerView> {
 
   //draw road between pickup and dropoff
   Future<RoadInfo> _roadController(controller) async {
+    //await controller.clearAllRoad();
     RoadInfo roadInfo = await controller.drawRoad(
       GeoPoint(latitude: 37.3489255, longitude: -121.9393553),
       GeoPoint(latitude: 37.364033, longitude: -121.9314599),
@@ -99,7 +103,7 @@ class _WalkerViewState extends State<WalkerView> {
     print("my location ${myLocation.latitude} ${myLocation.longitude}");
     await controller.addMarker(
       myLocation,
-      markerIcon: MarkerIcon(
+      markerIcon: const MarkerIcon(
         icon: Icon(Icons.location_on),
       ),
     );
@@ -127,6 +131,25 @@ class _WalkerViewState extends State<WalkerView> {
           fit: BoxFit.cover,
         ),
         MapView(controller: mapcontroller),
+        Positioned(
+          top: 30,
+          left: 10,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              maximumSize: Size(48, 48),
+              minimumSize: Size(24, 32),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              backgroundColor: Colors.white,
+              padding: EdgeInsets.zero,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Center(child: Icon(Icons.arrow_back)),
+          ),
+        ),
         Positioned(
           bottom: 100,
           left: 20,
