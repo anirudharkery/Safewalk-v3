@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:safewalk/views/user-home.dart';
 import 'package:safewalk/views/walker/walker_view.dart';
 
 class Home extends StatelessWidget {
@@ -31,7 +32,9 @@ class Home extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const WalkerView(),
+                    builder: (context) => const UserHome(
+                      title: "User Home",
+                    ),
                   ),
                 );
               },
