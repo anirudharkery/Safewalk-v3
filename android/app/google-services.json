@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "851353634533",
+    "firebase_url": "https://safe-walk-v3-default-rtdb.firebaseio.com",
+    "project_id": "safe-walk-v3",
+    "storage_bucket": "safe-walk-v3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851353634533:android:2b748a56c25c843677f60c",
+        "android_client_info": {
+          "package_name": "com.example.safewalk"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSXzUdHk0_P35OR1R8wyYhR6SUMlIySec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
