@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:safewalk/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:safewalk/components/text_field.dart';
 
 class SignUpView extends StatefulWidget {
   @override
@@ -27,63 +27,94 @@ class SignUpViewState extends State<SignUpView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign Up'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Create an Account!',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 16,),
-            TextFormField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                labelText: 'First Name',
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+
+
+              //SCU Logo
+              Image.asset(
+                      "./assets/images/logo_red.png",
+                      height: 229,
+                      width: 224,
               ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true,
-            ),
-            SizedBox(height: 16),
-            GestureDetector(
-              onTap: _signUp,
-              child: Text('Sign Up'),
-            ),
-            SizedBox(height: 16),
-            /*GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginView()),
-                );
-              },
-              child: Text(
-                'Already have an account?',
+              SizedBox(height: 30),
+
+
+              //Welcome Message
+              Text(
+                "Create an Account",
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.red,
-                  decoration: TextDecoration.underline,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),*/
-          ],
+              SizedBox(height: 30),
+
+
+              //Email
+              MyTextField(
+                controller: _emailController,
+                hintText: "Email",
+                obscureText: false,
+              ),
+              SizedBox(height:15),   
+
+
+              //Password
+              MyTextField(
+                controller: _passwordController,
+                hintText: "Password",
+                obscureText: true,
+                ),
+              SizedBox(height: 55),
+
+
+              //Sign Up Button
+              GestureDetector(
+                onTap: _signUp,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+
+              //Already have an account?
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context); // Navigate back to the previous page
+                },
+                child: Text(
+                  "Already have an account? Log In",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+
+
+            ]
+          ),
         ),
       ),
     );
