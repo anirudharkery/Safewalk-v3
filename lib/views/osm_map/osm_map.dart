@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:provider/provider.dart';
+import 'package:safewalk/controllers/map_controllers.dart';
 
 class MapView extends StatelessWidget {
   const MapView({
     super.key,
-    required this.controller,
   });
-  final MapController controller;
   @override
   Widget build(BuildContext context) {
+    print("Rebuilding OSM Map");
     return OSMFlutter(
-      controller: controller,
+      controller: context.watch<OSMMapController>().mapcontroller,
       mapIsLoading: const Center(
         child: CircularProgressIndicator(),
       ),
       onLocationChanged: (location) {
-        debugPrint(location.toString());
+        debugPrint(
+          location.toString(),
+        );
       },
       osmOption: OSMOption(
         showZoomController: true,
-
         enableRotationByGesture: true,
         zoomOption: const ZoomOption(
           initZoom: 16,

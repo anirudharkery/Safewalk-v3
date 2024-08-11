@@ -3,11 +3,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:provider/provider.dart';
-
+import 'package:safewalk/controllers/map_controllers.dart';
+import '../osm_map/osm_map.dart';
 import './bottom_sheet.dart';
 import 'package:safewalk/providers/user_location.dart';
-
-import 'map_view.dart';
 
 class WalkerView extends StatefulWidget {
   const WalkerView({super.key});
@@ -18,7 +17,6 @@ class WalkerView extends StatefulWidget {
 
 class _WalkerViewState extends State<WalkerView> {
   final _sheet = GlobalKey();
-  late MapController mapcontroller;
   final _controller = DraggableScrollableController();
   ValueNotifier<bool> trackingNotifier = ValueNotifier(true);
   ValueNotifier<GeoPoint?> userLocationNotifier = ValueNotifier(null);
@@ -31,11 +29,6 @@ class _WalkerViewState extends State<WalkerView> {
     _sheetWidget = Sheet(sheet: _sheet, controller: _controller);
     _controller.addListener(_onChanged);
     // OSM map controller
-    mapcontroller = MapController(
-      initMapWithUserPosition: UserTrackingOption(
-        enableTracking: trackingNotifier.value,
-      ),
-    );
   }
 
   void _onChanged() {
@@ -74,10 +67,6 @@ class _WalkerViewState extends State<WalkerView> {
       GeoPoint(latitude: 37.3489255, longitude: -121.9393553),
       GeoPoint(latitude: 37.364033, longitude: -121.9314599),
       roadType: RoadType.foot,
-      // intersectPoint: [
-      //   GeoPoint(latitude: 37.3489255, longitude: -121.9393553),
-      //   GeoPoint(latitude: 37.364033, longitude: -121.9314599)
-      // ],
       roadOption: const RoadOption(
         roadWidth: 5,
         roadColor: Colors.blue,
@@ -106,58 +95,70 @@ class _WalkerViewState extends State<WalkerView> {
   }
 
   Future<GeoPoint?> currentLocation() async {
-    return await mapcontroller.myLocation();
+    return await context.read<OSMMapController>().mapcontroller.myLocation();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) {
-          mapcontroller.myLocation().then((value) {
-            return UserLocationProvider(userLocation: value);
-          });
-        })
-      ],
-      child: Scaffold(
-          body: Stack(children: [
-        Image.asset(
-          "./assets/images/scu_google_map.jpeg",
-          height: double.infinity,
-          fit: BoxFit.cover,
-        ),
-        MapView(controller: mapcontroller),
-        Positioned(
-          bottom: 100,
-          left: 20,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              maximumSize: Size(48, 48),
-              minimumSize: Size(24, 32),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              backgroundColor: Colors.white,
-              padding: EdgeInsets.zero,
-            ),
-            onPressed: () {
-              // mapcontroller.myLocation().then((value) {
-              //   context.read<UserLocationProvider>().userLocation = value;
-              // });
-              setState(() {
-                _setMarker(mapcontroller);
-              });
-            },
-            child: const Center(child: Icon(Icons.my_location)),
+    return Scaffold(
+      body: Stack(
+        children: [
+          Image.asset(
+            "./assets/images/scu_google_map.jpeg",
+            height: double.infinity,
+            fit: BoxFit.cover,
           ),
-        ),
-        Positioned(
-          bottom: 100,
-          right: 20,
-          child: ElevatedButton.icon(
+          MapView(),
+          Positioned(
+            top: 20,
+            left: 20,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                maximumSize: Size(48, 48),
+                minimumSize: Size(24, 32),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: Colors.white,
+                padding: EdgeInsets.zero,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Center(
+                child: Icon(Icons.arrow_back),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 100,
+            left: 20,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                maximumSize: Size(48, 48),
+                minimumSize: Size(24, 32),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: Colors.white,
+                padding: EdgeInsets.zero,
+              ),
               onPressed: () {
                 setState(() {
-                  routeInfo = _roadController(mapcontroller);
+                  _setMarker(context.read<OSMMapController>().mapcontroller);
+                });
+              },
+              child: const Center(child: Icon(Icons.my_location)),
+            ),
+          ),
+          Positioned(
+            bottom: 100,
+            right: 20,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  routeInfo = _roadController(
+                      context.read<OSMMapController>().mapcontroller);
                   routeInfo!.then((data) {
                     print("road info");
                     print(data.route);
@@ -169,57 +170,60 @@ class _WalkerViewState extends State<WalkerView> {
                 });
               },
               icon: Icon(Icons.location_city),
-              label: Text("road")),
-        ),
-        Card(
-          margin: const EdgeInsets.only(
-            top: 100,
-            left: 30,
-            right: 20,
+              label: Text("road"),
+            ),
           ),
-          color: Theme.of(context).colorScheme.primary,
-          child: Container(
-            width: 340,
-            height: 131,
-            alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SvgPicture.asset('assets/images/left_arraow.svg',
-                            semanticsLabel: 'Acme Logo'),
-                      ),
-                      const Text(
-                        "100 ft",
-                        style: TextStyle(
-                          color: Colors.white,
+          Card(
+            margin: const EdgeInsets.only(
+              top: 100,
+              left: 30,
+              right: 20,
+            ),
+            color: Theme.of(context).colorScheme.primary,
+            child: Container(
+              width: 340,
+              height: 131,
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(
+                              'assets/images/left_arraow.svg',
+                              semanticsLabel: 'Acme Logo'),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  const Text(
-                    'Baker St',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28.0,
-                      fontWeight: FontWeight.bold,
+                        const Text(
+                          "100 ft",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const Text(
+                      'Baker St',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        _sheetWidget!
-      ])),
+          _sheetWidget!
+        ],
+      ),
     );
   }
 }

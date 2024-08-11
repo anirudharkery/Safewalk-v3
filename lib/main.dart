@@ -1,9 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:provider/provider.dart';
+import 'package:safewalk/views/walker/walker_view.dart';
 import './views/home.dart';
 import './views/main_view.dart';
+import './views/auth/login_view.dart';
+import './views/auth/signup_view.dart';
+import './views/user-home.dart';
+import 'controllers/map_controllers.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
@@ -28,7 +34,16 @@ Future main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => OSMMapController(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 ThemeData customeTheme(context) {
@@ -52,13 +67,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: "SafeWalk",
-        theme: customeTheme(context),
-        initialRoute: "/home",
-        routes: {
-          "/home": (context) => const Home(),
-        }
-        //home: const MainView() //const MyDraggableSheet(), //const MainView(),
-        );
+      title: "SafeWalk",
+      theme: customeTheme(context),
+      // initialRoute: "/",
+      // routes: {
+      //   "/": (context) => const Home(),
+      //   "/main": (context) => const MainView(),
+      //   "/login": (context) => LoginView(),
+      //   "/signup": (context) => SignUpView(),
+      //   "/walker": (context) => const WalkerView(),
+      //   "/user-home": (context) => const UserHome(),
+      // }
+      home: UserHome(title: "SafeWalk"), //const Home(),
+    );
   }
 }

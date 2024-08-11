@@ -2,56 +2,63 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:safewalk/controllers/map_controllers.dart';
+import './osm_map/osm_map.dart';
 import 'package:safewalk/views/walker/walker_view.dart';
 
 class SearchPage extends StatefulWidget {
+  SearchPage({Key? key}) : super(key: key);
+
   @override
-  _SearchPageState createState() => _SearchPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final MapController mapController = MapController(
-    initPosition: GeoPoint(latitude: 37.7749, longitude: -122.4194),
-  );
+  String startAddress = 'Santa Clara University';
 
-  String startAddress = '1234 University Street';
-  String destinationAddress = '';
+  String destinationAddress = 'Santa Clara Transit Center';
+
   GeoPoint? startPoint;
+
   GeoPoint? endPoint;
 
-  Future<void> _searchLocation(String address, bool isStart) async {
+  bool locationSelected = false;
+
+  Future<void> _searchLocation(
+      BuildContext context, String address, bool isStart) async {
     final url =
         'https://nominatim.openstreetmap.org/search?q=$address&format=json&limit=1';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body);
+      print(data);
       if (data.isNotEmpty) {
         final double latitude = double.parse(data[0]['lat']);
         final double longitude = double.parse(data[0]['lon']);
-
-        setState(() {
-          if (isStart) {
-            startPoint = GeoPoint(latitude: latitude, longitude: longitude);
-          } else {
-            endPoint = GeoPoint(latitude: latitude, longitude: longitude);
-          }
-        });
-
+        if (isStart) {
+          startPoint = GeoPoint(latitude: latitude, longitude: longitude);
+        } else {
+          endPoint = GeoPoint(latitude: latitude, longitude: longitude);
+        }
+        print("start: $startPoint, end: $endPoint");
         if (startPoint != null && endPoint != null) {
-          mapController.addMarker(startPoint!,
-              markerIcon: MarkerIcon(
-                  icon:
-                      Icon(Icons.location_pin, color: Colors.green, size: 48)));
-          mapController.addMarker(endPoint!,
-              markerIcon: MarkerIcon(
-                  icon: Icon(Icons.location_pin, color: Colors.red, size: 48)));
-          mapController.setZoom(zoomLevel: 12);
-          mapController.goToLocation(GeoPoint(
-              latitude: (startPoint!.latitude + endPoint!.latitude) / 2,
-              longitude: (startPoint!.longitude + endPoint!.longitude) / 2));
+          // Add markers
+          print('Adding markers');
+          context.read<OSMMapController>().addMarkers(startPoint!);
+          context.read<OSMMapController>().addMarkers(endPoint!);
+
+          setState(() {
+            locationSelected = true;
+            startPoint = startPoint;
+            endPoint = endPoint;
+          });
         }
       }
+    } else {
+      print(response.statusCode);
+      print(response.body);
     }
   }
 
@@ -65,111 +72,151 @@ class _SearchPageState extends State<SearchPage> {
         ),
         title: Text('Create a Request'),
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.circle, color: Colors.black, size: 15.0),
-                    hintText: startAddress,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                  ),
-                  onSubmitted: (value) {
-                    setState(() {
-                      startAddress = value;
-                    });
-                    _searchLocation(value, true);
-                  },
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.circle, color: Colors.grey, size: 15.0),
-                    hintText: 'Where to?',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                  ),
-                  onSubmitted: (value) {
-                    setState(() {
-                      destinationAddress = value;
-                    });
-                    _searchLocation(value, false);
-                  },
-                ),
-              ],
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.bookmark, color: Colors.black),
-            title: Text('Saved Places'),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              // Navigate to saved places
-            },
-          ),
-          Expanded(
-            child: Stack(
-              children: [
-                OSMFlutter(
-                  controller: mapController,
-                  osmOption: OSMOption(
-                    userTrackingOption: UserTrackingOption(
-                      enableTracking: true,
-                      unFollowUser: false,
-                    ),
-                    zoomOption: ZoomOption(
-                      initZoom: 12,
-                      minZoomLevel: 3,
-                      maxZoomLevel: 18,
-                    ),
-                    userLocationMarker: UserLocationMaker(
-                      personMarker: MarkerIcon(
-                        icon: Icon(
-                          Icons.location_history_rounded,
-                          color: Colors.red,
-                          size: 48,
-                        ),
-                      ),
-                      directionArrowMarker: MarkerIcon(
-                        icon: Icon(
-                          Icons.double_arrow,
-                          size: 48,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          // Navigate to walker view
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WalkerView(),
+          MapView(),
+          (!locationSelected)
+              ? Positioned(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        TextField(
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.circle,
+                                color: Colors.black, size: 15.0),
+                            hintText: startAddress,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
                             ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          onSubmitted: (value) {
+                            // setState(() {
+                            //   startAddress = value;
+                            // });
+                            _searchLocation(context, value, true);
+                          },
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.circle,
+                                color: Colors.grey, size: 15.0),
+                            hintText: 'Where to?',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                          ),
+                          onSubmitted: (value) {
+                            // setState(() {
+                            //   destinationAddress = value;
+                            // });
+                            _searchLocation(context, value, false);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Positioned(
+                  bottom: 20,
+                  right: 20,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      context.read<OSMMapController>().drawRoad(
+                            startPoint!,
+                            endPoint!,
                           );
-                        },
-                        child: Text("Request"))),
-              ],
-            ),
-          ),
+                    },
+                    icon: Icon(Icons.arrow_circle_right),
+                    label: Text("request"),
+                  ),
+                ),
         ],
       ),
+      // body: Column(
+      //   children: [
+      //     Padding(
+      //       padding: const EdgeInsets.all(8.0),
+      //       child: Column(
+      //         children: [
+      //           TextField(
+      //             decoration: InputDecoration(
+      //               prefixIcon:
+      //                   Icon(Icons.circle, color: Colors.black, size: 15.0),
+      //               hintText: startAddress,
+      //               border: OutlineInputBorder(
+      //                 borderRadius: BorderRadius.circular(8.0),
+      //               ),
+      //               filled: true,
+      //               fillColor: Colors.grey[200],
+      //             ),
+      //             onSubmitted: (value) {
+      //               setState(() {
+      //                 startAddress = value;
+      //               });
+      //               _searchLocation(value, true);
+      //             },
+      //           ),
+      //           SizedBox(height: 10),
+      //           TextField(
+      //             decoration: InputDecoration(
+      //               prefixIcon:
+      //                   Icon(Icons.circle, color: Colors.grey, size: 15.0),
+      //               hintText: 'Where to?',
+      //               border: OutlineInputBorder(
+      //                 borderRadius: BorderRadius.circular(8.0),
+      //               ),
+      //               filled: true,
+      //               fillColor: Colors.grey[200],
+      //             ),
+      //             onSubmitted: (value) {
+      //               setState(() {
+      //                 destinationAddress = value;
+      //               });
+      //               _searchLocation(value, false);
+      //             },
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //     ListTile(
+      //       leading: Icon(Icons.bookmark, color: Colors.black),
+      //       title: Text('Saved Places'),
+      //       trailing: Icon(Icons.arrow_forward_ios),
+      //       onTap: () {
+      //         // Navigate to saved places
+      //       },
+      //     ),
+      //     Expanded(
+      //       child: Stack(
+      //         children: [
+      //           MapView(),
+      //           Positioned(
+      //             bottom: 16,
+      //             right: 16,
+      //             child: ElevatedButton(
+      //               onPressed: () {
+      //                 // Navigate to walker view
+      //                 Navigator.push(
+      //                   context,
+      //                   MaterialPageRoute(
+      //                     builder: (context) => WalkerView(),
+      //                   ),
+      //                 );
+      //               },
+      //               child: Text("Request"),
+      //             ),
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

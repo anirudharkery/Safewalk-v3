@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:safewalk/views/login_view.dart';
-import 'package:safewalk/views/user-home.dart';
-import 'package:safewalk/views/walker/walker_view.dart';
+import 'package:safewalk/views/auth/login_view.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -33,7 +31,7 @@ class Home extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  LoginView()
+                    builder: (context) => LoginView(),
                   ),
                 );
               },

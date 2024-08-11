@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:footer/footer.dart';
 import 'package:safewalk/views/search_page.dart';
 
 import 'package:footer/footer_view.dart';
+import './osm_map/osm_map.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({super.key, required this.title});
@@ -19,18 +19,6 @@ class _UserHomeState extends State<UserHome> {
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
-  MapController controller = MapController.withUserPosition(
-      trackUserLocation: UserTrackingOption(
-    enableTracking: true,
-    unFollowUser: false,
-  ));
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -51,7 +39,9 @@ class _UserHomeState extends State<UserHome> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SearchPage()),
+                    MaterialPageRoute(
+                      builder: (context) => SearchPage(),
+                    ),
                   );
                 },
                 child: AbsorbPointer(
@@ -106,40 +96,7 @@ class _UserHomeState extends State<UserHome> {
               width: 300,
               height: 300,
               // child: Text("Hello"),
-              child: OSMFlutter(
-                controller: controller,
-                osmOption: OSMOption(
-                  showZoomController: true,
-                  userTrackingOption: const UserTrackingOption(
-                    enableTracking: true,
-                    unFollowUser: false,
-                  ),
-                  zoomOption: const ZoomOption(
-                    initZoom: 8,
-                    minZoomLevel: 3,
-                    maxZoomLevel: 19,
-                    stepZoom: 1.0,
-                  ),
-                  userLocationMarker: UserLocationMaker(
-                    personMarker: const MarkerIcon(
-                      icon: Icon(
-                        Icons.location_history_rounded,
-                        color: Colors.red,
-                        size: 48,
-                      ),
-                    ),
-                    directionArrowMarker: const MarkerIcon(
-                      icon: Icon(
-                        Icons.double_arrow,
-                        size: 48,
-                      ),
-                    ),
-                  ),
-                  roadConfiguration: const RoadOption(
-                    roadColor: Colors.yellowAccent,
-                  ),
-                ),
-              ),
+              child: MapView(),
             ),
           ],
         ),
@@ -153,8 +110,10 @@ class _UserHomeState extends State<UserHome> {
       appBar: AppBar(
         title: Row(
           children: [
-            Image.asset('assets/images/logo_red.png',
-                height: 40), // Assuming you have the SCU logo in assets
+            Image.asset(
+              'assets/images/logo_red.png',
+              height: 40,
+            ), // Assuming you have the SCU logo in assets
             const SizedBox(width: 10),
             Text(widget.title),
           ],

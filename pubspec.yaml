@@ -37,7 +37,7 @@ dependencies:
   flutter_animate: ^4.5.0
   flutter_svg: ^2.0.10+1
 
-  flutter_osm_plugin: ^1.1.0
+  flutter_osm_plugin: ^1.2.0
   geocoding:
   provider: ^6.1.2
   pointer_interceptor: ^0.10.1+1
