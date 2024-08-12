@@ -92,12 +92,12 @@ class _UserHomeState extends State<UserHome> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Container(
-              width: 300,
-              height: 300,
-              // child: Text("Hello"),
-              child: MapView(),
-            ),
+            // Container(
+            //   width: 300,
+            //   height: 300,
+            //   // child: Text("Hello"),
+            //   child: MapView(),
+            // ),
           ],
         ),
       ),

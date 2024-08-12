@@ -24,6 +24,15 @@ class _SearchPageState extends State<SearchPage> {
   GeoPoint? endPoint;
 
   bool locationSelected = false;
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) async => await initializeMap());
+  }
+
+  Future<void> initializeMap() async {
+    await context.read<OSMMapController>().fetchLocationUpdates();
+  }
 
   Future<void> _searchLocation(
       BuildContext context, String address, bool isStart) async {
@@ -75,6 +84,26 @@ class _SearchPageState extends State<SearchPage> {
       body: Stack(
         children: [
           MapView(),
+          //get current location
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                maximumSize: Size(48, 48),
+                minimumSize: Size(24, 32),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                backgroundColor: Colors.white,
+                padding: EdgeInsets.zero,
+              ),
+              onPressed: () {
+                context.read<OSMMapController>().currentLocation();
+              },
+              child: const Center(child: Icon(Icons.my_location)),
+            ),
+          ),
           (!locationSelected)
               ? Positioned(
                   child: Padding(
@@ -96,6 +125,7 @@ class _SearchPageState extends State<SearchPage> {
                             // setState(() {
                             //   startAddress = value;
                             // });
+                            value = startAddress;
                             _searchLocation(context, value, true);
                           },
                         ),
@@ -115,9 +145,21 @@ class _SearchPageState extends State<SearchPage> {
                             // setState(() {
                             //   destinationAddress = value;
                             // });
+                            value = destinationAddress;
                             _searchLocation(context, value, false);
                           },
                         ),
+                        // ListTile(
+                        //   style: ListTileStyle(
+
+                        //   ),
+                        //   leading: Icon(Icons.bookmark, color: Colors.black),
+                        //   title: Text('Saved Places'),
+                        //   trailing: Icon(Icons.arrow_forward_ios),
+                        //   onTap: () {
+                        //     // Navigate to saved places
+                        //   },
+                        // ),
                       ],
                     ),
                   ),

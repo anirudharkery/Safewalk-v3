@@ -2,11 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:safewalk/views/walker/walker_view.dart';
-import './views/home.dart';
-import './views/main_view.dart';
-import './views/auth/login_view.dart';
-import './views/auth/signup_view.dart';
 import './views/user-home.dart';
 import 'controllers/map_controllers.dart';
 
