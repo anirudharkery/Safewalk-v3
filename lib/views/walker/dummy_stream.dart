@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:safewalk/controllers/map_controllers.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 
 class LocationStream {
-  LocationStream() {
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_count >= 1) {
-        _controller.sink.add(_count);
+  LocationStream(BuildContext context, GeoPoint endPoint) {
+    Timer.periodic(const Duration(seconds: 5), (timer) async {
+      if (roadInfo.distance == null || roadInfo.distance! >= 0.0) {
+        print("Getting location data");
+        GeoPoint? startPoint =
+            await context.read<OSMMapController>().mapcontroller.myLocation();
+        print("Stream start: $startPoint, end: $endPoint");
+        RoadInfo roadInfo = await context.read<OSMMapController>().drawRoad(
+              startPoint,
+              endPoint,
+            );
+        _controller.sink.add(roadInfo);
         _count--;
         //print(_count);
       } else {
@@ -14,7 +25,8 @@ class LocationStream {
     });
   }
   var _count = 5;
-  final _controller = StreamController<int>();
+  var roadInfo = RoadInfo();
+  final _controller = StreamController<RoadInfo>();
 
-  Stream<int> get stream => _controller.stream.asBroadcastStream();
+  Stream<RoadInfo> get stream => _controller.stream.asBroadcastStream();
 }

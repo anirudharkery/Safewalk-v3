@@ -24,6 +24,7 @@ class _SearchPageState extends State<SearchPage> {
   GeoPoint? endPoint;
 
   bool locationSelected = false;
+  bool showBottom = false;
   void initState() {
     super.initState();
     WidgetsBinding.instance
@@ -71,8 +72,97 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  Widget _displayOptions() {
+    print("location selected: $locationSelected, bottom: $showBottom");
+    if (!locationSelected && !showBottom) {
+      return Positioned(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  prefixIcon:
+                      Icon(Icons.circle, color: Colors.black, size: 15.0),
+                  hintText: startAddress,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+                onSubmitted: (value) {
+                  // setState(() {
+                  //   startAddress = value;
+                  // });
+                  value = startAddress;
+                  _searchLocation(context, value, true);
+                },
+              ),
+              SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                  prefixIcon:
+                      Icon(Icons.circle, color: Colors.grey, size: 15.0),
+                  hintText: 'Where to?',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                ),
+                onSubmitted: (value) {
+                  // setState(() {
+                  //   destinationAddress = value;
+                  // });
+                  value = destinationAddress;
+                  _searchLocation(context, value, false);
+                },
+              ),
+              // ListTile(
+              //   style: ListTileStyle(
+
+              //   ),
+              //   leading: Icon(Icons.bookmark, color: Colors.black),
+              //   title: Text('Saved Places'),
+              //   trailing: Icon(Icons.arrow_forward_ios),
+              //   onTap: () {
+              //     // Navigate to saved places
+              //   },
+              // ),
+            ],
+          ),
+        ),
+      );
+    } else if (locationSelected && !showBottom) {
+      return Positioned(
+        bottom: 20,
+        right: 20,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            context.read<OSMMapController>().drawRoad(
+                  startPoint!,
+                  endPoint!,
+                );
+            setState(() {
+              showBottom = true;
+            });
+          },
+          icon: Icon(Icons.arrow_circle_right),
+          label: Text("request"),
+        ),
+      );
+    } else {
+      return WalkerView(
+        endPoint: endPoint!,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("RENDERING SEARCH PAGE");
+    Widget body = _displayOptions();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -84,181 +174,9 @@ class _SearchPageState extends State<SearchPage> {
       body: Stack(
         children: [
           MapView(),
-          //get current location
-          Positioned(
-            bottom: 20,
-            left: 20,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                maximumSize: Size(48, 48),
-                minimumSize: Size(24, 32),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                backgroundColor: Colors.white,
-                padding: EdgeInsets.zero,
-              ),
-              onPressed: () {
-                context.read<OSMMapController>().currentLocation();
-              },
-              child: const Center(child: Icon(Icons.my_location)),
-            ),
-          ),
-          (!locationSelected)
-              ? Positioned(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        TextField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.circle,
-                                color: Colors.black, size: 15.0),
-                            hintText: startAddress,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                          ),
-                          onSubmitted: (value) {
-                            // setState(() {
-                            //   startAddress = value;
-                            // });
-                            value = startAddress;
-                            _searchLocation(context, value, true);
-                          },
-                        ),
-                        SizedBox(height: 10),
-                        TextField(
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.circle,
-                                color: Colors.grey, size: 15.0),
-                            hintText: 'Where to?',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                          ),
-                          onSubmitted: (value) {
-                            // setState(() {
-                            //   destinationAddress = value;
-                            // });
-                            value = destinationAddress;
-                            _searchLocation(context, value, false);
-                          },
-                        ),
-                        // ListTile(
-                        //   style: ListTileStyle(
-
-                        //   ),
-                        //   leading: Icon(Icons.bookmark, color: Colors.black),
-                        //   title: Text('Saved Places'),
-                        //   trailing: Icon(Icons.arrow_forward_ios),
-                        //   onTap: () {
-                        //     // Navigate to saved places
-                        //   },
-                        // ),
-                      ],
-                    ),
-                  ),
-                )
-              : Positioned(
-                  bottom: 20,
-                  right: 20,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      context.read<OSMMapController>().drawRoad(
-                            startPoint!,
-                            endPoint!,
-                          );
-                    },
-                    icon: Icon(Icons.arrow_circle_right),
-                    label: Text("request"),
-                  ),
-                ),
+          body,
         ],
       ),
-      // body: Column(
-      //   children: [
-      //     Padding(
-      //       padding: const EdgeInsets.all(8.0),
-      //       child: Column(
-      //         children: [
-      //           TextField(
-      //             decoration: InputDecoration(
-      //               prefixIcon:
-      //                   Icon(Icons.circle, color: Colors.black, size: 15.0),
-      //               hintText: startAddress,
-      //               border: OutlineInputBorder(
-      //                 borderRadius: BorderRadius.circular(8.0),
-      //               ),
-      //               filled: true,
-      //               fillColor: Colors.grey[200],
-      //             ),
-      //             onSubmitted: (value) {
-      //               setState(() {
-      //                 startAddress = value;
-      //               });
-      //               _searchLocation(value, true);
-      //             },
-      //           ),
-      //           SizedBox(height: 10),
-      //           TextField(
-      //             decoration: InputDecoration(
-      //               prefixIcon:
-      //                   Icon(Icons.circle, color: Colors.grey, size: 15.0),
-      //               hintText: 'Where to?',
-      //               border: OutlineInputBorder(
-      //                 borderRadius: BorderRadius.circular(8.0),
-      //               ),
-      //               filled: true,
-      //               fillColor: Colors.grey[200],
-      //             ),
-      //             onSubmitted: (value) {
-      //               setState(() {
-      //                 destinationAddress = value;
-      //               });
-      //               _searchLocation(value, false);
-      //             },
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //     ListTile(
-      //       leading: Icon(Icons.bookmark, color: Colors.black),
-      //       title: Text('Saved Places'),
-      //       trailing: Icon(Icons.arrow_forward_ios),
-      //       onTap: () {
-      //         // Navigate to saved places
-      //       },
-      //     ),
-      //     Expanded(
-      //       child: Stack(
-      //         children: [
-      //           MapView(),
-      //           Positioned(
-      //             bottom: 16,
-      //             right: 16,
-      //             child: ElevatedButton(
-      //               onPressed: () {
-      //                 // Navigate to walker view
-      //                 Navigator.push(
-      //                   context,
-      //                   MaterialPageRoute(
-      //                     builder: (context) => WalkerView(),
-      //                   ),
-      //                 );
-      //               },
-      //               child: Text("Request"),
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import './views/user-home.dart';
 import 'controllers/map_controllers.dart';
-
+import './views/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
       //   "/walker": (context) => const WalkerView(),
       //   "/user-home": (context) => const UserHome(),
       // }
-      home: UserHome(title: "SafeWalk"), //const Home(),
+      home: UserHome(title: "SafeWalk"), //const Home(),const Home(), //
     );
   }
 }

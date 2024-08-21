@@ -1,18 +1,23 @@
 import 'dart:async';
-
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter/material.dart';
 import 'dummy_stream.dart';
 
 class Sheet extends StatelessWidget {
-  Sheet({super.key, required this.sheet, required this.controller});
+  Sheet(
+      {super.key,
+      required this.sheet,
+      required this.controller,
+      required this.endPoint});
+  GeoPoint endPoint;
   DraggableScrollableController controller;
 
   Key sheet;
 
   @override
   Widget build(BuildContext context) {
-    LocationStream? _locationStream =
-        LocationStream(); // IT will rebuild the refreshing widget
+    LocationStream? _locationStream = LocationStream(
+        context, endPoint); // IT will rebuild the refreshing widget
     return DraggableScrollableSheet(
       key: sheet,
       initialChildSize: 0.1,
@@ -39,7 +44,7 @@ class Sheet extends StatelessWidget {
                   // to get location distance data from Streams.
 
                   StreamBuilder(
-                      stream: _locationStream!.stream,
+                      stream: _locationStream.stream,
                       builder: (context, snapshot) {
                         //print("snapshot ${snapshot.hasData}");
                         if (!snapshot.hasData) {
@@ -57,7 +62,7 @@ class Sheet extends StatelessWidget {
                               return const CircularProgressIndicator();
                             case ConnectionState.active:
                               return Text(
-                                "${snapshot.data}",
+                                "${snapshot.data!.distance!.toStringAsFixed(2)} km",
                                 style: const TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
