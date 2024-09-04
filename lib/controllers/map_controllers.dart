@@ -7,6 +7,7 @@ import 'package:location/location.dart';
 // ignore: prefer_mixin
 class OSMMapController with ChangeNotifier {
   final locationController = Location(); // from location package
+
   LocationData? prevLocation;
   MapController mapcontroller = MapController.withUserPosition(
     trackUserLocation: const UserTrackingOption(
@@ -14,12 +15,15 @@ class OSMMapController with ChangeNotifier {
       unFollowUser: false,
     ),
   );
+  // MapController mapcontroller = MapController.withPosition(
+  //   initPosition: GeoPoint(latitude: 37.4219999, longitude: -122.0840575),
+  // );
 
-  void addMarkers(GeoPoint point) {
+  void addMarkers({required GeoPoint point, required Color color}) {
     mapcontroller.addMarker(
       point,
       markerIcon: MarkerIcon(
-        icon: Icon(Icons.location_pin, color: Colors.red, size: 48),
+        icon: Icon(Icons.location_pin, color: color, size: 48),
       ),
     );
     print("added marker");
@@ -44,20 +48,21 @@ class OSMMapController with ChangeNotifier {
     print("${roadInfo.distance}km");
     print("${roadInfo.duration}sec");
     print("------------------------------------");
-    notifyListeners();
+    //notifyListeners();
     return roadInfo;
   }
 
   void currentLocation() async {
-    final myLocation = await mapcontroller.myLocation();
-    print("my location ${myLocation.latitude} ${myLocation.longitude}");
-    await mapcontroller.addMarker(
-      myLocation,
-      markerIcon: MarkerIcon(
-        icon: Icon(Icons.location_on),
+    final crrLocation = await mapcontroller.myLocation();
+    print("my location ${crrLocation.latitude} ${crrLocation.longitude}");
+    addMarkers(
+      point: GeoPoint(
+        latitude: crrLocation.latitude,
+        longitude: crrLocation.longitude,
       ),
+      color: Colors.blue,
     );
-    notifyListeners();
+    //notifyListeners();
   }
 
   Future<void> fetchLocationUpdates() async {
@@ -100,10 +105,13 @@ class OSMMapController with ChangeNotifier {
             );
           }
 
-          addMarkers(GeoPoint(
-            latitude: currentLocation.latitude!,
-            longitude: currentLocation.longitude!,
-          ));
+          addMarkers(
+            point: GeoPoint(
+              latitude: currentLocation.latitude!,
+              longitude: currentLocation.longitude!,
+            ),
+            color: Colors.green,
+          );
 
           prevLocation = currentLocation;
         }

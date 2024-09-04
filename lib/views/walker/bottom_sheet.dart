@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter/material.dart';
-import 'dummy_stream.dart';
+import 'location_stream.dart';
 
 class Sheet extends StatelessWidget {
   Sheet(
@@ -16,6 +16,7 @@ class Sheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("RENDERING BOTTOM SHEET");
     LocationStream? _locationStream = LocationStream(
         context, endPoint); // IT will rebuild the refreshing widget
     return DraggableScrollableSheet(
@@ -38,73 +39,75 @@ class Sheet extends StatelessWidget {
             controller: scrollController,
             children: [
               const Icon(Icons.arrow_drop_up),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // to get location distance data from Streams.
-
-                  StreamBuilder(
-                      stream: _locationStream.stream,
-                      builder: (context, snapshot) {
-                        //print("snapshot ${snapshot.hasData}");
-                        if (!snapshot.hasData) {
-                          return const Text(
-                            "Your Walker if here",
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        } else {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.waiting:
-                            case ConnectionState.none:
-                              return const CircularProgressIndicator();
-                            case ConnectionState.active:
-                              return Text(
-                                "${snapshot.data!.distance!.toStringAsFixed(2)} km",
+              StreamBuilder(
+                  stream: _locationStream.stream,
+                  builder: (context, snapshot) {
+                    //print("snapshot ${snapshot.hasData}");
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: const Text(
+                          "Waiting for walker...",
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    } else {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                        case ConnectionState.none:
+                          return const CircularProgressIndicator();
+                        case ConnectionState.active:
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "${snapshot.data!.duration!.toStringAsFixed(2)} sec",
                                 style: const TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
                                 ),
-                              );
-                            case ConnectionState.done:
-                              return const Text(
-                                "Your Walker if here",
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                child: const Icon(
+                                  Icons.directions_walk,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "${snapshot.data!.distance!.toStringAsFixed(2)} km",
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
                                 ),
-                              );
-                          }
-                        }
-                      }),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    child: const Icon(
-                      Icons.directions_walk,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  const Text(
-                    '1 mile',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+                              ),
+                            ],
+                          );
+                        case ConnectionState.done:
+                          return Center(
+                            child: const Text(
+                              "Your Walker is here",
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                      }
+                    }
+                  }),
               Center(
                 child: Text(
                   'Picking up Joanna',

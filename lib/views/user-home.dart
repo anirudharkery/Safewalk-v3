@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:footer/footer.dart';
 import 'package:safewalk/views/search_page.dart';
 
 import 'package:footer/footer_view.dart';
-import './osm_map/osm_map.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({super.key, required this.title});
@@ -83,7 +81,6 @@ class _UserHomeState extends State<UserHome> {
                     color: Theme.of(context).textTheme.titleMedium!.color),
               ),
             ),
-            // const SizedBox(height: 30),
             Text(
               'Around You',
               style: TextStyle(
@@ -92,12 +89,6 @@ class _UserHomeState extends State<UserHome> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            // Container(
-            //   width: 300,
-            //   height: 300,
-            //   // child: Text("Hello"),
-            //   child: MapView(),
-            // ),
           ],
         ),
       ),

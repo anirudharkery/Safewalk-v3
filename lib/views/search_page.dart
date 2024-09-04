@@ -27,8 +27,9 @@ class _SearchPageState extends State<SearchPage> {
   bool showBottom = false;
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) async => await initializeMap());
+    // WidgetsBinding.instance.addPostFrameCallback(
+    //   (_) async => await initializeMap(),
+    // );
   }
 
   Future<void> initializeMap() async {
@@ -56,8 +57,12 @@ class _SearchPageState extends State<SearchPage> {
         if (startPoint != null && endPoint != null) {
           // Add markers
           print('Adding markers');
-          context.read<OSMMapController>().addMarkers(startPoint!);
-          context.read<OSMMapController>().addMarkers(endPoint!);
+          context
+              .read<OSMMapController>()
+              .addMarkers(point: startPoint!, color: Colors.blue);
+          context
+              .read<OSMMapController>()
+              .addMarkers(point: endPoint!, color: Colors.red);
 
           setState(() {
             locationSelected = true;
@@ -92,9 +97,6 @@ class _SearchPageState extends State<SearchPage> {
                   fillColor: Colors.grey[200],
                 ),
                 onSubmitted: (value) {
-                  // setState(() {
-                  //   startAddress = value;
-                  // });
                   value = startAddress;
                   _searchLocation(context, value, true);
                 },
@@ -174,6 +176,20 @@ class _SearchPageState extends State<SearchPage> {
       body: Stack(
         children: [
           MapView(),
+          Positioned(
+            bottom: 30,
+            left: 20,
+            child: IconButton.filled(
+              onPressed: () {
+                context.read<OSMMapController>().currentLocation();
+              },
+              icon: Icon(
+                Icons.my_location_outlined,
+                color: Colors.black,
+                size: 30.0,
+              ),
+            ),
+          ),
           body,
         ],
       ),

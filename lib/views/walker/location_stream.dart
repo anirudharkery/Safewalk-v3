@@ -7,8 +7,11 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 class LocationStream {
   LocationStream(BuildContext context, GeoPoint endPoint) {
     Timer.periodic(const Duration(seconds: 5), (timer) async {
-      if (roadInfo.distance == null || roadInfo.distance! >= 0.0) {
+      if (_count > 0 &&
+          (roadInfo.distance == null || roadInfo.distance! >= 0.0)) {
         print("Getting location data");
+        print("Count: $_count");
+        //check if startPoint and current location is same or not
         GeoPoint? startPoint =
             await context.read<OSMMapController>().mapcontroller.myLocation();
         print("Stream start: $startPoint, end: $endPoint");
@@ -18,13 +21,12 @@ class LocationStream {
             );
         _controller.sink.add(roadInfo);
         _count--;
-        //print(_count);
       } else {
         _controller.close();
       }
     });
   }
-  var _count = 5;
+  var _count = 10;
   var roadInfo = RoadInfo();
   final _controller = StreamController<RoadInfo>();
 

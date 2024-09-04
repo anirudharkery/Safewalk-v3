@@ -33,8 +33,8 @@ class MapView extends StatelessWidget {
             personMarker: MarkerIcon(
               icon: Icon(
                 Icons.car_crash_sharp,
-                color: Colors.red,
-                size: 48,
+                color: Colors.blue,
+                size: 36,
               ),
             ),
             directionArrowMarker: const MarkerIcon(
