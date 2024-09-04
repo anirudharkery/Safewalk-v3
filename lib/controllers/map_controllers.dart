@@ -2,23 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 /// Mix-in [DiagnosticableTreeMixin] to have access to [debugFillProperties] for the devtool
 // ignore: prefer_mixin
 class OSMMapController with ChangeNotifier {
-  final locationController = Location(); // from location package
+  double? _remainingDistance;
+  GeoPoint? prevLocation;
+  GeoPoint? _destination;
+  double? get remainingDistance => _remainingDistance;
 
-  LocationData? prevLocation;
   MapController mapcontroller = MapController.withUserPosition(
     trackUserLocation: const UserTrackingOption(
       enableTracking: true,
       unFollowUser: false,
     ),
   );
-  // MapController mapcontroller = MapController.withPosition(
-  //   initPosition: GeoPoint(latitude: 37.4219999, longitude: -122.0840575),
-  // );
 
+  /// Adds a marker to the map at [point] with the color [color].
+  ///
+  /// [point] is the location of the marker.
+  /// [color] is the color of the marker.
+  ///
+  /// This function notifies the listeners after adding a marker.
   void addMarkers({required GeoPoint point, required Color color}) {
     mapcontroller.addMarker(
       point,
@@ -30,28 +37,13 @@ class OSMMapController with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<RoadInfo> drawRoad(GeoPoint source, GeoPoint destination) async {
-    RoadInfo roadInfo = await mapcontroller.drawRoad(
-      GeoPoint(latitude: source.latitude, longitude: source.longitude),
-      GeoPoint(
-          latitude: destination.latitude, longitude: destination.longitude),
-      roadType: RoadType.foot,
-      roadOption: const RoadOption(
-        roadWidth: 15,
-        roadColor: Colors.blue,
-        zoomInto: true,
-      ),
-    );
-
-    print("road info");
-    print(roadInfo.instructions);
-    print("${roadInfo.distance}km");
-    print("${roadInfo.duration}sec");
-    print("------------------------------------");
-    //notifyListeners();
-    return roadInfo;
-  }
-
+  /// Gets the current location of the user and adds a marker at that location.
+  ///
+  /// This function uses the [MapController] to get the current location of the user.
+  /// It then calls the [addMarkers] function to add a marker at that location.
+  /// The color of the marker is [Colors.blue].
+  ///
+  /// The function does not notify the listeners after adding the marker.
   void currentLocation() async {
     final crrLocation = await mapcontroller.myLocation();
     print("my location ${crrLocation.latitude} ${crrLocation.longitude}");
@@ -65,58 +57,119 @@ class OSMMapController with ChangeNotifier {
     //notifyListeners();
   }
 
-  Future<void> fetchLocationUpdates() async {
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
+  // Set the destination to calculate the remaining distance
+  void setDestination(GeoPoint destination) {
+    _destination = destination;
+  }
 
-    serviceEnabled = await locationController.serviceEnabled();
-    if (serviceEnabled) {
-      serviceEnabled = await locationController.requestService();
-    } else {
-      return;
-    }
-
-    permissionGranted = await locationController.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await locationController.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
+  /// Start listening to location changes
+  ///
+  /// This function uses the [Geolocator] to listen to location changes.
+  /// It adds a marker at the current location and updates the route on the map
+  /// if a destination is set.
+  ///
+  /// The function notifies the listeners after adding a marker and updating the route.
+  void startTracking() {
+    // Start listening to location changes
+    print("start tracking");
+    Geolocator.getPositionStream(
+      locationSettings: LocationSettings(
+        //accuracy: LocationAccuracy.high,
+        distanceFilter: 10, // Only update if moved by 10 meters
+      ),
+    ).listen((Position position) async {
+      if (prevLocation != null) {
+        mapcontroller.removeMarker(prevLocation!);
       }
-    }
+      addMarkers(
+        point: GeoPoint(
+            latitude: position.latitude, longitude: position.longitude),
+        color: Colors.blue,
+      );
 
-    locationController.onLocationChanged.listen((currentLocation) {
-      if (currentLocation.latitude != prevLocation?.latitude &&
-          currentLocation.longitude != prevLocation?.longitude) {
-        if (currentLocation.latitude != null &&
-            currentLocation.longitude != null) {
-          print(
-              "current location Tracking: ${currentLocation.latitude} ${currentLocation.longitude}");
-          print(
-              "prev location Tracking: ${prevLocation?.latitude} ${prevLocation?.longitude}");
+      prevLocation =
+          GeoPoint(latitude: position.latitude, longitude: position.longitude);
 
-          if (prevLocation != null &&
-              currentLocation.latitude != prevLocation!.latitude &&
-              currentLocation.longitude != prevLocation!.longitude) {
-            mapcontroller.removeMarker(
-              GeoPoint(
-                latitude: prevLocation!.latitude!,
-                longitude: prevLocation!.longitude!,
-              ),
-            );
-          }
+      if (_destination != null) {
+        // Calculate distance only if moved by a significant distance
 
-          addMarkers(
-            point: GeoPoint(
-              latitude: currentLocation.latitude!,
-              longitude: currentLocation.longitude!,
-            ),
-            color: Colors.green,
-          );
-
-          prevLocation = currentLocation;
-        }
+        _remainingDistance = Geolocator.distanceBetween(
+              position.latitude,
+              position.longitude,
+              _destination!.latitude,
+              _destination!.longitude,
+            ) /
+            1000; // Convert meters to kilometers
+        print("Remaining distance: $_remainingDistance km");
+        // Update the route on the map
+        await updateRoute(mapcontroller, position);
       }
+
+      notifyListeners();
     });
+  }
+
+  // Function to update route from current location to the destination
+  /// Update route from current location to the destination on the map.
+  ///
+  /// This function is called when the user's location changes. It fetches the updated
+  /// route from the current location to the destination and updates the route on the map
+  /// by clearing the existing route and drawing the new route.
+  ///
+  /// The function does not notify the listeners after updating the route.
+  Future<void> updateRoute(
+      MapController mapController, Position currentPosition) async {
+    if (_destination != null) {
+      // Fetch the updated route from the current position to the destination
+      final route = await fetchRoute(
+        GeoPoint(
+            latitude: currentPosition.latitude,
+            longitude: currentPosition.longitude),
+        _destination!,
+      );
+      if (route != null) {
+        // Clear existing routes and draw the new updated route
+        await mapController.clearAllRoads();
+        await mapcontroller.drawRoad(
+          GeoPoint(
+            latitude: currentPosition.latitude,
+            longitude: currentPosition.longitude,
+          ), // Updated source point
+          _destination!, // Destination point
+          roadType: RoadType.foot,
+          intersectPoint: route,
+          roadOption: RoadOption(
+            roadColor: Colors.blue,
+            roadWidth: 10.0,
+            // Draw the route using waypoints
+          ),
+        );
+      }
+    }
+  }
+
+  // Function to fetch route points from the OSRM API
+  Future<List<GeoPoint>?> fetchRoute(
+      GeoPoint source, GeoPoint destination) async {
+    final url =
+        'http://router.project-osrm.org/route/v1/driving/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=full&geometries=geojson';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final coordinates = data['routes'][0]['geometry']['coordinates'];
+        List<GeoPoint> routePoints = coordinates
+            .map<GeoPoint>((point) => GeoPoint(
+                  latitude: point[1], // OSRM returns longitude first
+                  longitude: point[0],
+                ))
+            .toList();
+        return routePoints;
+      }
+    } catch (e) {
+      print("Error fetching route: $e");
+    }
+    return null;
   }
 
   void _disposeControllers() {

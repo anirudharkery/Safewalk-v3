@@ -63,7 +63,8 @@ class Sheet extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "${snapshot.data!.duration!.toStringAsFixed(2)} sec",
+                                //"${(snapshot.data!.duration! / 60).toStringAsFixed(2)} mins",
+                                "${snapshot.data!} mins",
                                 style: const TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,
@@ -87,7 +88,8 @@ class Sheet extends StatelessWidget {
                                 width: 10,
                               ),
                               Text(
-                                "${snapshot.data!.distance!.toStringAsFixed(2)} km",
+                                // "${snapshot.data!.distance!.toStringAsFixed(2)} km",
+                                "${snapshot.data!} km",
                                 style: TextStyle(
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.bold,

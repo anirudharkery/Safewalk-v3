@@ -27,13 +27,7 @@ class _SearchPageState extends State<SearchPage> {
   bool showBottom = false;
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback(
-    //   (_) async => await initializeMap(),
-    // );
-  }
-
-  Future<void> initializeMap() async {
-    await context.read<OSMMapController>().fetchLocationUpdates();
+    //Provider.of<OSMMapController>(context, listen: false).startTracking();
   }
 
   Future<void> _searchLocation(
@@ -52,6 +46,7 @@ class _SearchPageState extends State<SearchPage> {
           startPoint = GeoPoint(latitude: latitude, longitude: longitude);
         } else {
           endPoint = GeoPoint(latitude: latitude, longitude: longitude);
+          context.read<OSMMapController>().setDestination(endPoint!);
         }
         print("start: $startPoint, end: $endPoint");
         if (startPoint != null && endPoint != null) {
@@ -76,6 +71,29 @@ class _SearchPageState extends State<SearchPage> {
       print(response.body);
     }
   }
+
+  // // Function to fetch and draw the route
+  // Future<void> drawRoute(GeoPoint source, GeoPoint destination) async {
+  //   // Fetch route points from OSRM API
+  //   final route = await Provider.of<OSMMapController>(context, listen: false)
+  //       .fetchRoute(source, destination);
+  //   if (route != null) {
+  //     context.read<OSMMapController>().mapcontroller.drawRoad(
+  //           source, // Source point
+  //           destination, // Destination point
+  //           roadType: RoadType.foot,
+  //           intersectPoint: route,
+  //           roadOption: RoadOption(
+  //             roadColor: Colors.blue,
+  //             roadWidth: 5.0,
+  //             // Draw the route using waypoints
+  //           ),
+  //         );
+  //     // // Set destination in TripProvider to calculate remaining distance
+  //     // Provider.of<TripProvider>(context, listen: false)
+  //     //     .setDestination(destination);
+  //   }
+  // }
 
   Widget _displayOptions() {
     print("location selected: $locationSelected, bottom: $showBottom");
@@ -142,10 +160,9 @@ class _SearchPageState extends State<SearchPage> {
         right: 20,
         child: ElevatedButton.icon(
           onPressed: () {
-            context.read<OSMMapController>().drawRoad(
-                  startPoint!,
-                  endPoint!,
-                );
+            // TODO: add route drawing
+            Provider.of<OSMMapController>(context, listen: false)
+                .startTracking();
             setState(() {
               showBottom = true;
             });
