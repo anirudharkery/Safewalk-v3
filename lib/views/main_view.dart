@@ -1,158 +1,115 @@
+// import 'package:flutter/material.dart';
+
+// class MainView extends StatelessWidget {
+//   const MainView({super.key});
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     return Scaffold(
+//       backgroundColor: Theme.of(context).colorScheme.primary,
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Text(
+//               "Welcome to SCU-Safewalk.",
+//               style: Theme.of(context).textTheme.titleLarge!.copyWith(
+//                     color: const Color(0xFFFFFFFF),
+//                   ),
+//             ),
+//             Image.asset("./assets/images/logo_white.png", height: 200, width: 200,),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+
+// class MyHomePage extends StatefulWidget {
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   final TextEditingController _addressController = TextEditingController();
+//   String _result = '';
+
+//   Future<void> _fetchAndStoreCoordinates() async {
+//     final address = _addressController.text;
+//     final url = Uri.parse('https://nominatim.openstreetmap.org/search?q=$address&format=json&addressdetails=1&limit=1');
+//     final response = await http.get(url);
+
+//     if (response.statusCode == 200) {
+//       final data = json.decode(response.body);
+//       if (data.isNotEmpty) {
+//         final lat = data[0]['lat'];
+//         final lon = data[0]['lon'];
+
+//         await FirebaseFirestore.instance.collection('locations').add({
+//           'address': address,
+//           'latitude': lat,
+//           'longitude': lon,
+//         });
+
+//         setState(() {
+//           _result = 'Coordinates stored in Firestore: ($lat, $lon)';
+//         });
+//       } else {
+//         setState(() {
+//           _result = 'No coordinates found for the address';
+//         });
+//       }
+//     } else {
+//       setState(() {
+//         _result = 'Failed to fetch coordinates';
+//       });
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Flutter OSM and Firebase'),
+//       ),
+//       body: Padding(
+//         padding: EdgeInsets.all(16.0),
+//         child: Column(
+//           children: [
+//             TextField(
+//               controller: _addressController,
+//               decoration: InputDecoration(
+//                 labelText: 'Enter Address',
+//               ),
+//             ),
+//             SizedBox(height: 16.0),
+//             ElevatedButton(
+//               onPressed: _fetchAndStoreCoordinates,
+//               child: Text('Fetch and Store Coordinates'),
+//             ),
+//             SizedBox(height: 16.0),
+//             Text(_result),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
-//import './home_view.dart';
-import 'auth/login_view.dart';
+import 'my_home_page.dart'; // Corrected import path
 
 class MainView extends StatelessWidget {
-  const MainView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: 50),
-            //SafeWalkSCU Logo
-            Padding(
-              padding: EdgeInsets.only(top: 152.0),
-              child: Column(children: [
-                Image.asset(
-                  "./assets/images/logo_redcircle.png",
-                  height: 129,
-                  width: 124,
-                ),
-                //SizedBox(height: 20),
-                Text(
-                  "SafeWalkSCU",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: 0.1,
-                    fontFamily: "Inter",
-                  ),
-                )
-              ]),
-            ),
-
-            SizedBox(height: 75),
-            //Column of Buttons
-            //
-            //
-            Padding(
-                padding: EdgeInsets.only(top: 40.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      //Sign in with Google Button
-                      //
-                      //
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginView()),
-                          );
-                        },
-                        child: SizedBox(
-                          width: 345,
-                          height: 83,
-                          child: Image.asset(
-                            "./assets/images/signin_google.png",
-                            fit: BoxFit
-                                .contain, // Adjust how the image fits within the button
-                          ),
-                        ),
-                      ),
-                      //Dispatcher Button
-                      //
-                      //
-                      SizedBox(height: 20),
-                      SizedBox(
-                        width: 334,
-                        height: 74,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.phone_in_talk,
-                                color: Colors.black,
-                                size: 40,
-                              ),
-                              SizedBox(
-                                  width:
-                                      10), // Adjust the spacing between icon and text
-                              Text(
-                                " Call Dispatcher",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: 0.125,
-                                  fontFamily: "Inter",
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      //Campus Safety Button
-                      //
-                      //
-                      SizedBox(height: 20),
-                      SizedBox(
-                        width: 334,
-                        height: 74,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              backgroundColor: Colors.black),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                              SizedBox(
-                                  width:
-                                      10), // Adjust the spacing between icon and text
-                              Text(
-                                " Call Campus Safety",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 23,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: 0.125,
-                                  fontFamily: "Inter",
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ]))
-          ],
-        ),
+      appBar: AppBar(
+        title: Text('Main View'),
       ),
+      body: MyHomePage(),
     );
   }
 }

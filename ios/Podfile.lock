@@ -1,26 +1,4 @@
 PODS:
-<<<<<<< Updated upstream
-  - Alamofire (5.9.1)
-  - Flutter (1.0.0)
-  - flutter_osm_plugin (0.0.1):
-    - Alamofire
-    - Flutter
-    - Polyline
-    - Tangram-es
-    - Yams
-  - geocoding_ios (1.0.5):
-    - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - permission_handler_apple (9.3.0):
-    - Flutter
-  - Polyline (5.1.0)
-  - Tangram-es (0.17.1)
-  - url_launcher_ios (0.0.1):
-    - Flutter
-  - Yams (5.0.6)
-=======
   - abseil/algorithm (1.20240116.2):
     - abseil/algorithm/algorithm (= 1.20240116.2)
     - abseil/algorithm/container (= 1.20240116.2)
@@ -968,195 +946,73 @@ PODS:
     - abseil/meta/type_traits
     - abseil/xcprivacy
   - abseil/xcprivacy (1.20240116.2)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-  - Alamofire (5.9.1)
->>>>>>> Stashed changes
-=======
-  - Alamofire (5.9.1)
->>>>>>> Stashed changes
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-  - Alamofire (5.9.1)
->>>>>>> Stashed changes
-=======
-  - Alamofire (5.9.1)
->>>>>>> Stashed changes
   - BoringSSL-GRPC (0.0.32):
     - BoringSSL-GRPC/Implementation (= 0.0.32)
     - BoringSSL-GRPC/Interface (= 0.0.32)
   - BoringSSL-GRPC/Implementation (0.0.32):
     - BoringSSL-GRPC/Interface (= 0.0.32)
   - BoringSSL-GRPC/Interface (0.0.32)
-  - cloud_firestore (5.1.0):
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    - Firebase/Firestore (= 10.28.0)
+  - cloud_firestore (4.17.5):
+    - Firebase/Firestore (= 10.25.0)
     - firebase_core
     - Flutter
-  - Firebase/Auth (10.28.0):
+  - Firebase/Auth (10.25.0):
     - Firebase/CoreOnly
-    - FirebaseAuth (~> 10.28.0)
-  - Firebase/CoreOnly (10.28.0):
-    - FirebaseCore (= 10.28.0)
-  - Firebase/Firestore (10.28.0):
+    - FirebaseAuth (~> 10.25.0)
+  - Firebase/CoreOnly (10.25.0):
+    - FirebaseCore (= 10.25.0)
+  - Firebase/Database (10.25.0):
     - Firebase/CoreOnly
-    - FirebaseFirestore (~> 10.28.0)
-  - Firebase/Storage (10.28.0):
+    - FirebaseDatabase (~> 10.25.0)
+  - Firebase/Firestore (10.25.0):
     - Firebase/CoreOnly
-    - FirebaseStorage (~> 10.28.0)
-  - firebase_auth (5.1.2):
-    - Firebase/Auth (= 10.28.0)
+    - FirebaseFirestore (~> 10.25.0)
+  - Firebase/Messaging (10.25.0):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 10.25.0)
+  - firebase_auth (4.19.4):
+    - Firebase/Auth (= 10.25.0)
     - firebase_core
     - Flutter
-  - firebase_core (3.2.0):
-    - Firebase/CoreOnly (= 10.28.0)
+  - firebase_core (2.32.0):
+    - Firebase/CoreOnly (= 10.25.0)
     - Flutter
-  - firebase_storage (12.1.1):
-    - Firebase/Storage (= 10.28.0)
+  - firebase_database (10.5.2):
+    - Firebase/Database (= 10.25.0)
     - firebase_core
     - Flutter
-  - FirebaseAppCheckInterop (10.29.0)
-  - FirebaseAuth (10.28.0):
-=======
-=======
->>>>>>> Stashed changes
-    - Firebase/Firestore (= 10.29.0)
+  - firebase_messaging (14.9.4):
+    - Firebase/Messaging (= 10.25.0)
     - firebase_core
     - Flutter
-  - Firebase/Auth (10.29.0):
-    - Firebase/CoreOnly
-    - FirebaseAuth (~> 10.29.0)
-  - Firebase/CoreOnly (10.29.0):
-    - FirebaseCore (= 10.29.0)
-  - Firebase/Firestore (10.29.0):
-    - Firebase/CoreOnly
-    - FirebaseFirestore (~> 10.29.0)
-  - Firebase/Storage (10.29.0):
-    - Firebase/CoreOnly
-    - FirebaseStorage (~> 10.29.0)
-  - firebase_auth (5.1.4):
-    - Firebase/Auth (= 10.29.0)
-    - firebase_core
-    - Flutter
-  - firebase_core (3.3.0):
-    - Firebase/CoreOnly (= 10.29.0)
-    - Flutter
-  - firebase_storage (12.1.3):
-    - Firebase/Storage (= 10.29.0)
-    - firebase_core
-    - Flutter
-  - FirebaseAppCheckInterop (10.29.0)
-  - FirebaseAuth (10.29.0):
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
-=======
->>>>>>> Stashed changes
-    - Firebase/Firestore (= 10.29.0)
-    - firebase_core
-    - Flutter
-  - Firebase/Auth (10.29.0):
-    - Firebase/CoreOnly
-    - FirebaseAuth (~> 10.29.0)
-  - Firebase/CoreOnly (10.29.0):
-    - FirebaseCore (= 10.29.0)
-  - Firebase/Firestore (10.29.0):
-    - Firebase/CoreOnly
-    - FirebaseFirestore (~> 10.29.0)
-  - Firebase/Storage (10.29.0):
-    - Firebase/CoreOnly
-    - FirebaseStorage (~> 10.29.0)
-  - firebase_auth (5.1.4):
-    - Firebase/Auth (= 10.29.0)
-    - firebase_core
-    - Flutter
-  - firebase_core (3.3.0):
-    - Firebase/CoreOnly (= 10.29.0)
-    - Flutter
-  - firebase_storage (12.1.3):
-    - Firebase/Storage (= 10.29.0)
-    - firebase_core
-    - Flutter
-  - FirebaseAppCheckInterop (10.29.0)
-  - FirebaseAuth (10.29.0):
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+  - FirebaseAppCheckInterop (10.25.0)
+  - FirebaseAuth (10.25.0):
     - FirebaseAppCheckInterop (~> 10.17)
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
     - GoogleUtilities/Environment (~> 7.8)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
     - RecaptchaInterop (~> 100.0)
-  - FirebaseAuthInterop (10.29.0)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  - FirebaseCore (10.28.0):
-=======
-  - FirebaseCore (10.29.0):
->>>>>>> Stashed changes
-=======
-  - FirebaseCore (10.29.0):
->>>>>>> Stashed changes
-=======
-  - FirebaseCore (10.29.0):
->>>>>>> Stashed changes
-=======
-  - FirebaseCore (10.29.0):
->>>>>>> Stashed changes
+  - FirebaseCore (10.25.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
-  - FirebaseCoreExtension (10.29.0):
+  - FirebaseCoreExtension (10.25.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.29.0):
+  - FirebaseCoreInternal (10.25.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  - FirebaseFirestore (10.28.0):
+  - FirebaseDatabase (10.25.0):
+    - FirebaseAppCheckInterop (~> 10.17)
+    - FirebaseCore (~> 10.0)
+    - FirebaseSharedSwift (~> 10.0)
+    - GoogleUtilities/UserDefaults (~> 7.13)
+    - leveldb-library (~> 1.22)
+  - FirebaseFirestore (10.25.0):
     - FirebaseCore (~> 10.0)
     - FirebaseCoreExtension (~> 10.0)
-    - FirebaseFirestoreInternal (= 10.28.0)
+    - FirebaseFirestoreInternal (= 10.25.0)
     - FirebaseSharedSwift (~> 10.0)
-  - FirebaseFirestoreInternal (10.28.0):
-=======
-=======
->>>>>>> Stashed changes
-  - FirebaseFirestore (10.29.0):
-    - FirebaseCore (~> 10.0)
-    - FirebaseCoreExtension (~> 10.0)
-    - FirebaseFirestoreInternal (= 10.29.0)
-    - FirebaseSharedSwift (~> 10.0)
-  - FirebaseFirestoreInternal (10.29.0):
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
-=======
->>>>>>> Stashed changes
-  - FirebaseFirestore (10.29.0):
-    - FirebaseCore (~> 10.0)
-    - FirebaseCoreExtension (~> 10.0)
-    - FirebaseFirestoreInternal (= 10.29.0)
-    - FirebaseSharedSwift (~> 10.0)
-  - FirebaseFirestoreInternal (10.29.0):
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+  - FirebaseFirestoreInternal (10.25.0):
     - abseil/algorithm (~> 1.20240116.1)
     - abseil/base (~> 1.20240116.1)
     - abseil/container/flat_hash_map (~> 1.20240116.1)
@@ -1171,59 +1027,28 @@ PODS:
     - gRPC-Core (~> 1.62.0)
     - leveldb-library (~> 1.22)
     - nanopb (< 2.30911.0, >= 2.30908.0)
-  - FirebaseSharedSwift (10.29.0)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  - FirebaseStorage (10.28.0):
-=======
-  - FirebaseStorage (10.29.0):
->>>>>>> Stashed changes
-=======
-  - FirebaseStorage (10.29.0):
->>>>>>> Stashed changes
-=======
-  - FirebaseStorage (10.29.0):
->>>>>>> Stashed changes
-=======
-  - FirebaseStorage (10.29.0):
->>>>>>> Stashed changes
-    - FirebaseAppCheckInterop (~> 10.0)
-    - FirebaseAuthInterop (~> 10.25)
+  - FirebaseInstallations (10.29.0):
     - FirebaseCore (~> 10.0)
-    - FirebaseCoreExtension (~> 10.0)
-    - GoogleUtilities/Environment (~> 7.12)
-    - GTMSessionFetcher/Core (< 4.0, >= 2.1)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - PromisesObjC (~> 2.1)
+  - FirebaseMessaging (10.25.0):
+    - FirebaseCore (~> 10.0)
+    - FirebaseInstallations (~> 10.0)
+    - GoogleDataTransport (~> 9.3)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.8)
+    - GoogleUtilities/Environment (~> 7.8)
+    - GoogleUtilities/Reachability (~> 7.8)
+    - GoogleUtilities/UserDefaults (~> 7.8)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+  - FirebaseSharedSwift (10.25.0)
   - Flutter (1.0.0)
-<<<<<<< Updated upstream
-=======
-  - flutter_osm_plugin (0.0.1):
-    - Alamofire
+  - flutter_local_notifications (0.0.1):
     - Flutter
-    - OSMFlutterFramework
-    - Polyline
-    - Yams
-  - geocoding_ios (1.0.5):
-    - Flutter
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-<<<<<<< Updated upstream
-=======
-  - flutter_osm_plugin (0.0.1):
-    - Alamofire
-    - Flutter
-    - OSMFlutterFramework
-    - Polyline
-    - Yams
-  - geocoding_ios (1.0.5):
-    - Flutter
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+  - GoogleDataTransport (9.4.1):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
+    - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/AppDelegateSwizzler (7.13.3):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -1244,6 +1069,9 @@ PODS:
     - GoogleUtilities/Privacy
   - GoogleUtilities/Privacy (7.13.3)
   - GoogleUtilities/Reachability (7.13.3):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/UserDefaults (7.13.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - "gRPC-C++ (1.62.5)":
@@ -1324,265 +1152,107 @@ PODS:
     - gRPC-Core/Privacy (= 1.62.5)
   - gRPC-Core/Interface (1.62.5)
   - gRPC-Core/Privacy (1.62.5)
-  - GTMSessionFetcher/Core (3.5.0)
+  - GTMSessionFetcher/Core (3.4.1)
   - leveldb-library (1.22.5)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
   - nanopb/decode (2.30910.0)
   - nanopb/encode (2.30910.0)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
   - RecaptchaInterop (100.0.0)
-=======
-=======
->>>>>>> Stashed changes
-  - OSMFlutterFramework (0.7.1)
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - permission_handler_apple (9.3.0):
-    - Flutter
-  - pointer_interceptor_ios (0.0.1):
-    - Flutter
-  - Polyline (5.1.0)
-  - PromisesObjC (2.4.0)
-  - RecaptchaInterop (100.0.0)
-  - url_launcher_ios (0.0.1):
-    - Flutter
-  - Yams (5.0.6)
->>>>>>> Stashed changes
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 DEPENDENCIES:
+  - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - Firebase/Auth (= 10.25.0)
+  - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
+  - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
+  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
-  - flutter_osm_plugin (from `.symlinks/plugins/flutter_osm_plugin/ios`)
-  - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
-
-SPEC REPOS:
-  trunk:
-    - Alamofire
-    - Polyline
-    - Tangram-es
-    - Yams
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
-=======
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
-  - pointer_interceptor_ios (from `.symlinks/plugins/pointer_interceptor_ios/ios`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
->>>>>>> Stashed changes
 
 SPEC REPOS:
   trunk:
     - abseil
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-    - Alamofire
->>>>>>> Stashed changes
-=======
-    - Alamofire
->>>>>>> Stashed changes
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-    - Alamofire
->>>>>>> Stashed changes
-=======
-    - Alamofire
->>>>>>> Stashed changes
     - BoringSSL-GRPC
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseAuth
-    - FirebaseAuthInterop
     - FirebaseCore
     - FirebaseCoreExtension
     - FirebaseCoreInternal
+    - FirebaseDatabase
     - FirebaseFirestore
     - FirebaseFirestoreInternal
+    - FirebaseInstallations
+    - FirebaseMessaging
     - FirebaseSharedSwift
-    - FirebaseStorage
+    - GoogleDataTransport
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
     - GTMSessionFetcher
     - leveldb-library
     - nanopb
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
     - PromisesObjC
     - RecaptchaInterop
-=======
-=======
->>>>>>> Stashed changes
-    - OSMFlutterFramework
-    - Polyline
-    - PromisesObjC
-    - RecaptchaInterop
-    - Yams
->>>>>>> Stashed changes
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 EXTERNAL SOURCES:
+  cloud_firestore:
+    :path: ".symlinks/plugins/cloud_firestore/ios"
+  firebase_auth:
+    :path: ".symlinks/plugins/firebase_auth/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
+  firebase_database:
+    :path: ".symlinks/plugins/firebase_database/ios"
+  firebase_messaging:
+    :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
-  flutter_osm_plugin:
-    :path: ".symlinks/plugins/flutter_osm_plugin/ios"
-  geocoding_ios:
-    :path: ".symlinks/plugins/geocoding_ios/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-
-SPEC CHECKSUMS:
-  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-<<<<<<< Updated upstream
-  flutter_osm_plugin: a661df71d2a3d1698ee410dd2272c8536f9e46f4
-  geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
-  Polyline: 2a1f29f87f8d9b7de868940f4f76deb8c678a5b1
-  Tangram-es: 628b634f7fc09d2217469b9914de00d9de49ff9d
-  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
-  Yams: e10dae147f517ed57ecae37c5e8681bdf8fcab65
-
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
-=======
-=======
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
-  pointer_interceptor_ios:
-    :path: ".symlinks/plugins/pointer_interceptor_ios/ios"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
-=======
->>>>>>> Stashed changes
 
 SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
-  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
-  cloud_firestore: 65b92bd5db2a75160ef73b5abb29688073cfa249
-  Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
-  firebase_auth: 8dbfcdd635cc4fb2ea213aeee8c9a979b3d3373b
-  firebase_core: 57aeb91680e5d5e6df6b888064be7c785f146efb
-  firebase_storage: a099c6305aead7bed5dc7272db64c57195cd8fea
-  FirebaseAppCheckInterop: 6a1757cfd4067d8e00fccd14fcc1b8fd78cfac07
-  FirebaseAuth: e2ebfaf9fb4638a1c9a3b0efd17d1b90943987cd
-  FirebaseAuthInterop: 17db81e9b198afb0f95ce48c133825727eed55d3
-  FirebaseCore: 30e9c1cbe3d38f5f5e75f48bfcea87d7c358ec16
-  FirebaseCoreExtension: 705ca5b14bf71d2564a0ddc677df1fc86ffa600f
-  FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
-  FirebaseFirestore: f258936f52d712337233182b90042a76ff48dce0
-  FirebaseFirestoreInternal: f43d25cc04835ec3aa1885f4fc946a1a4f9e1c56
-  FirebaseSharedSwift: 20530f495084b8d840f78a100d8c5ee613375f6e
-  FirebaseStorage: 436c30aa46f2177ba152f268fe4452118b8a4856
+  cloud_firestore: 003d53b6b8b392600b7769acf9421cc4f23e5911
+  Firebase: 0312a2352584f782ea56f66d91606891d4607f06
+  firebase_auth: 59b73550b86d6213a4e9509a9c21b59ea524c647
+  firebase_core: a626d00494efa398e7c54f25f1454a64c8abf197
+  firebase_database: d5971c679d16449c2240d4d1aca1cc40312b3f0c
+  firebase_messaging: 06391e8f35dc65a00c56580266285263d2861f10
+  FirebaseAppCheckInterop: 5da5ce93e8797a215e3f677fb0654b74e736c8b8
+  FirebaseAuth: c0f93dcc570c9da2bffb576969d793e95c344fbb
+  FirebaseCore: 7ec4d0484817f12c3373955bc87762d96842d483
+  FirebaseCoreExtension: 8a47811d0b155501559ef05d089518152a0a1677
+  FirebaseCoreInternal: 910a81992c33715fec9263ca7381d59ab3a750b7
+  FirebaseDatabase: faa489a42f5f868d23a55dd442d6e2099348458e
+  FirebaseFirestore: 977ccc27a3caa5d68279f209c3b0450f85b9dc5f
+  FirebaseFirestoreInternal: 04b8afa77b4e5b84e86ab5ad985193e9573239fa
+  FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
+  FirebaseMessaging: 88950ba9485052891ebe26f6c43a52bb62248952
+  FirebaseSharedSwift: 0274086954b1b2d5fd7e829eccc587044d72a4ba
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-<<<<<<< Updated upstream
-=======
-=======
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
-  pointer_interceptor_ios:
-    :path: ".symlinks/plugins/pointer_interceptor_ios/ios"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
-
-SPEC CHECKSUMS:
-  abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
-  Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
-  BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
-  cloud_firestore: 65b92bd5db2a75160ef73b5abb29688073cfa249
-  Firebase: cec914dab6fd7b1bd8ab56ea07ce4e03dd251c2d
-  firebase_auth: 8dbfcdd635cc4fb2ea213aeee8c9a979b3d3373b
-  firebase_core: 57aeb91680e5d5e6df6b888064be7c785f146efb
-  firebase_storage: a099c6305aead7bed5dc7272db64c57195cd8fea
-  FirebaseAppCheckInterop: 6a1757cfd4067d8e00fccd14fcc1b8fd78cfac07
-  FirebaseAuth: e2ebfaf9fb4638a1c9a3b0efd17d1b90943987cd
-  FirebaseAuthInterop: 17db81e9b198afb0f95ce48c133825727eed55d3
-  FirebaseCore: 30e9c1cbe3d38f5f5e75f48bfcea87d7c358ec16
-  FirebaseCoreExtension: 705ca5b14bf71d2564a0ddc677df1fc86ffa600f
-  FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
-  FirebaseFirestore: f258936f52d712337233182b90042a76ff48dce0
-  FirebaseFirestoreInternal: f43d25cc04835ec3aa1885f4fc946a1a4f9e1c56
-  FirebaseSharedSwift: 20530f495084b8d840f78a100d8c5ee613375f6e
-  FirebaseStorage: 436c30aa46f2177ba152f268fe4452118b8a4856
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
->>>>>>> Stashed changes
-  flutter_osm_plugin: 5ba7a278863c01035d8c11b1a16f87cacac37f3c
-  geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
+  GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
   "gRPC-C++": e725ef63c4475d7cdb7e2cf16eb0fde84bd9ee51
   gRPC-Core: eee4be35df218649fe66d721a05a7f27a28f069b
-  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
+  GTMSessionFetcher: 8000756fc1c19d2e5697b90311f7832d2e33f6cd
   leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
 
-PODFILE CHECKSUM: a57f30d18f102dd3ce366b1d62a55ecbef2158e5
-=======
-=======
->>>>>>> Stashed changes
-  OSMFlutterFramework: 82b1cd6e87c16c1eb350dc4dc1d493c3ce15cc0f
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
-  pointer_interceptor_ios: 508241697ff0947f853c061945a8b822463947c1
-  Polyline: 2a1f29f87f8d9b7de868940f4f76deb8c678a5b1
-  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
-  url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
-  Yams: e10dae147f517ed57ecae37c5e8681bdf8fcab65
-
-PODFILE CHECKSUM: 978dd492a93a8ef4ec2dc2b3631de447af34068a
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+PODFILE CHECKSUM: fb14653cbed91dfddf510e87a14c4e0371e5f9c6
 
 COCOAPODS: 1.15.2
