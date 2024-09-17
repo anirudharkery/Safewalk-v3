@@ -5,6 +5,7 @@ import 'package:safewalk/views/signup_view.dart';
 import 'package:safewalk/components/login_button.dart';
 import 'package:safewalk/components/text_field.dart';
 import 'package:safewalk/views/user-home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'signup_view.dart';
 
 class LoginView extends StatelessWidget {
@@ -111,10 +112,13 @@ class LoginView extends StatelessWidget {
   User? user = await _auth.signInWithEmailAndPassword(email, password);
 
   if (user != null) {
+    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true); 
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserHome(title: "Welcome to SafeWalk")),
+      MaterialPageRoute(builder: (context) => UserHome(title: "Welcome to SafeWalk", onLogout: () {},)),
     );
     
   } else {

@@ -20,6 +20,7 @@ class MainView extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 152.0), 
               child: Column(
+                
                 children: [
                   Image.asset(
                     "./assets/images/logo_redcircle.png",
