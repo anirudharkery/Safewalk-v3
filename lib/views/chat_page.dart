@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:safewalk/components/chat_bubble.dart';
 import 'package:safewalk/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:safewalk/chat/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,9 +37,10 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context){
+    String username = receiverEmail.split('@')[0];
     return Scaffold(
       appBar: AppBar(
-        title: Text(receiverId),
+        title: Text(username),
       ),
       body: Column(
         children: [
@@ -93,30 +95,55 @@ class ChatPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Text(data['message']),
+          ChatBubble(
+            message: data['message'],
+            isSender: isCurrentUser,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildUserInput(){
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: _messageController,
-            decoration: InputDecoration(
-              hintText: "Type a message",
+  Widget _buildUserInput() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 50.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center, 
+        children: [
+          Flexible(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 350), 
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFE5E5E5), 
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: "Type a message",
+                      border: InputBorder.none, // Removes the default underline
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-
-        IconButton(
-          icon: Icon(Icons.send),
-          onPressed: sendMessage,
-        ),
-
-      ],
+          Container(
+            margin: const EdgeInsets.only(left: 10.0), // Adds spacing between input and send button
+            decoration: BoxDecoration(
+              color: Color(0xFFB23234), 
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: Icon(Icons.arrow_upward_rounded, color: Colors.white), 
+              onPressed: sendMessage,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

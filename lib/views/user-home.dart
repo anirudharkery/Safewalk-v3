@@ -186,6 +186,7 @@ class _UserHomeState extends State<UserHome> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Row(
           children: [
             Image.asset('assets/images/logo_red.png',
@@ -369,8 +370,8 @@ class _UserHomeState extends State<UserHome> {
               context, 
               MaterialPageRoute(
                 builder: (context) => ChatPage(
-                  receiverId: userData['email'], 
-                  receiverEmail: userData['uid'],
+                  receiverId: userData['uid'], 
+                  receiverEmail: userData['email'],
                   )
                 ),
               );
