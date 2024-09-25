@@ -103,17 +103,6 @@ class OSMMapController with ChangeNotifier {
           GeoPoint(latitude: position.latitude, longitude: position.longitude);
 
       if (_destination != null) {
-        // Calculate distance only if moved by a significant distance
-
-        // _remainingDistance = Geolocator.distanceBetween(
-        //       position.latitude,
-        //       position.longitude,
-        //       _destination!.latitude,
-        //       _destination!.longitude,
-        //     ) /
-        //     1000; // Convert meters to kilometers
-        // print("Remaining distance: $_remainingDistance km");
-        // Update the route on the map
         await updateRoute(mapcontroller, position);
       }
 
@@ -165,8 +154,9 @@ class OSMMapController with ChangeNotifier {
       GeoPoint source, GeoPoint destination) async {
     final url =
         "https://routing.openstreetmap.de/routed-foot/route/v1/driving/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=false&alternatives=true&steps=true";
-    // final url =
+    //final url =
     //     'http://router.project-osrm.org/route/v1/foot/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=full&geometries=geojson';
+    print(url);
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
@@ -178,12 +168,15 @@ class OSMMapController with ChangeNotifier {
         _remainingDistance = data['routes'][0]['legs'][0]['distance'] / 1000;
         _remainingDuration = data['routes'][0]['legs'][0]['duration'] / 60;
         // Extract the route points from the response
-        final coordinates = data['routes'][0]['geometry']['coordinates'];
+        final coordinates = data['routes'][0]['legs'][0]['steps'];
         List<GeoPoint> routePoints = coordinates
-            .map<GeoPoint>((point) => GeoPoint(
-                  latitude: point[1], // OSRM returns longitude first
-                  longitude: point[0],
-                ))
+            .map<GeoPoint>(
+              (point) => GeoPoint(
+                latitude: point['maneuver']['location']
+                    [1], // OSRM returns longitude first
+                longitude: point['maneuver']['location'][0],
+              ),
+            )
             .toList();
         return routePoints;
       }
