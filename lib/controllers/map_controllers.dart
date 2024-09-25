@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
@@ -8,11 +9,14 @@ import 'dart:convert';
 /// Mix-in [DiagnosticableTreeMixin] to have access to [debugFillProperties] for the devtool
 // ignore: prefer_mixin
 class OSMMapController with ChangeNotifier {
+  String startAddress = 'Santa Clara University';
+  String destinationAddress = 'Santa Clara Transit Center';
   double? _remainingDistance;
+  double? _remainingDuration;
   GeoPoint? prevLocation;
   GeoPoint? _destination;
   double? get remainingDistance => _remainingDistance;
-
+  double? get remainingDuration => _remainingDuration;
   MapController mapcontroller = MapController.withUserPosition(
     trackUserLocation: const UserTrackingOption(
       enableTracking: true,
@@ -62,6 +66,14 @@ class OSMMapController with ChangeNotifier {
     _destination = destination;
   }
 
+  void setDestinationAddress(String address) {
+    destinationAddress = address;
+  }
+
+  void setStartAddress(String address) {
+    startAddress = address;
+  }
+
   /// Start listening to location changes
   ///
   /// This function uses the [Geolocator] to listen to location changes.
@@ -93,14 +105,14 @@ class OSMMapController with ChangeNotifier {
       if (_destination != null) {
         // Calculate distance only if moved by a significant distance
 
-        _remainingDistance = Geolocator.distanceBetween(
-              position.latitude,
-              position.longitude,
-              _destination!.latitude,
-              _destination!.longitude,
-            ) /
-            1000; // Convert meters to kilometers
-        print("Remaining distance: $_remainingDistance km");
+        // _remainingDistance = Geolocator.distanceBetween(
+        //       position.latitude,
+        //       position.longitude,
+        //       _destination!.latitude,
+        //       _destination!.longitude,
+        //     ) /
+        //     1000; // Convert meters to kilometers
+        // print("Remaining distance: $_remainingDistance km");
         // Update the route on the map
         await updateRoute(mapcontroller, position);
       }
@@ -152,11 +164,18 @@ class OSMMapController with ChangeNotifier {
   Future<List<GeoPoint>?> fetchRoute(
       GeoPoint source, GeoPoint destination) async {
     final url =
-        'http://router.project-osrm.org/route/v1/driving/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=full&geometries=geojson';
+        'http://router.project-osrm.org/route/v1/foot/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=full&geometries=geojson';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print("--------------------------------------");
+        //print(data);
+        print(data['routes'][0]["legs"]);
+        print("--------------------------------------");
+        _remainingDistance = data['routes'][0]['legs'][0]['distance'] / 1000;
+        _remainingDuration = data['routes'][0]['legs'][0]['duration'] / 60;
+        // Extract the route points from the response
         final coordinates = data['routes'][0]['geometry']['coordinates'];
         List<GeoPoint> routePoints = coordinates
             .map<GeoPoint>((point) => GeoPoint(

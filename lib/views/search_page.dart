@@ -48,7 +48,7 @@ class _SearchPageState extends State<SearchPage> {
           endPoint = GeoPoint(latitude: latitude, longitude: longitude);
           context.read<OSMMapController>().setDestination(endPoint!);
         }
-        print("start: $startPoint, end: $endPoint");
+        print("start: $startAddress, end: $destinationAddress");
         if (startPoint != null && endPoint != null) {
           // Add markers
           print('Adding markers');
@@ -72,29 +72,6 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  // // Function to fetch and draw the route
-  // Future<void> drawRoute(GeoPoint source, GeoPoint destination) async {
-  //   // Fetch route points from OSRM API
-  //   final route = await Provider.of<OSMMapController>(context, listen: false)
-  //       .fetchRoute(source, destination);
-  //   if (route != null) {
-  //     context.read<OSMMapController>().mapcontroller.drawRoad(
-  //           source, // Source point
-  //           destination, // Destination point
-  //           roadType: RoadType.foot,
-  //           intersectPoint: route,
-  //           roadOption: RoadOption(
-  //             roadColor: Colors.blue,
-  //             roadWidth: 5.0,
-  //             // Draw the route using waypoints
-  //           ),
-  //         );
-  //     // // Set destination in TripProvider to calculate remaining distance
-  //     // Provider.of<TripProvider>(context, listen: false)
-  //     //     .setDestination(destination);
-  //   }
-  // }
-
   Widget _displayOptions() {
     print("location selected: $locationSelected, bottom: $showBottom");
     if (!locationSelected && !showBottom) {
@@ -115,7 +92,10 @@ class _SearchPageState extends State<SearchPage> {
                   fillColor: Colors.grey[200],
                 ),
                 onSubmitted: (value) {
-                  value = startAddress;
+                  setState(() {
+                    startAddress = value;
+                    context.read<OSMMapController>().setStartAddress(value);
+                  });
                   _searchLocation(context, value, true);
                 },
               ),
@@ -132,10 +112,13 @@ class _SearchPageState extends State<SearchPage> {
                   fillColor: Colors.grey[200],
                 ),
                 onSubmitted: (value) {
-                  // setState(() {
-                  //   destinationAddress = value;
-                  // });
-                  value = destinationAddress;
+                  setState(() {
+                    destinationAddress = value;
+                    context
+                        .read<OSMMapController>()
+                        .setDestinationAddress(value);
+                  });
+                  //value = destinationAddress;
                   _searchLocation(context, value, false);
                 },
               ),
