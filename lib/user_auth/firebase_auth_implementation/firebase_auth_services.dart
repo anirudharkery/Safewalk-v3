@@ -1,17 +1,34 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirebaseAuthService {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  //Instance of firebase auth and firestore
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Current User
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
 
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
+      //Creates User
       if (email.endsWith('@scu.edu')) {
         UserCredential credential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
+
+        //Store user data in firestore
+        _firestore.collection('Users').doc(credential.user!.uid).set({
+          'email': email,
+          'username': email.split('@')[0],
+          'uid': credential.user!.uid,
+        });
+
         User? user = credential.user;
+
         if (user != null) {
-          // TODO: Navigate to a success screen and Show Success Message
           user.sendEmailVerification();
           return user;
         }
@@ -20,9 +37,9 @@ class FirebaseAuthService {
         print("Please an SCU email to sign up");
       }
     } catch (e) {
-      // TODO: Show Error Message to user
       print("Some error occured");
     }
+
     return null;
   }
 
@@ -31,11 +48,18 @@ class FirebaseAuthService {
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      _firestore.collection('Users').doc(credential.user!.uid).set({
+        'email': email,
+        'username': email.split('@')[0],
+        'uid': credential.user!.uid,
+      });
+
       return credential.user;
     } catch (e) {
-      // TODO: Show Error Message to user
       print("Some error occured");
     }
+
     return null;
   }
 }

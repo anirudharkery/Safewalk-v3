@@ -3,6 +3,7 @@ import 'package:safewalk/components/home/cs_nav_bar.dart';
 
 class HomeNavBar extends StatelessWidget {
   const HomeNavBar({super.key});
+ 
 
   @override
   Widget build(BuildContext context) {

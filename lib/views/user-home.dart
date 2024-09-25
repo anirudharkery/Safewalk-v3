@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:footer/footer.dart';
+import 'package:safewalk/views/chat_page.dart';
 import 'package:safewalk/views/search_page.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:footer/footer_view.dart';
+//import 'package:safewalk/views/main_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:safewalk/chat/chat_service.dart';
+import 'package:safewalk/components/user_tile.dart';
+import 'package:safewalk/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 
 class UserHome extends StatefulWidget {
-  const UserHome({super.key, required this.title});
-
   final String title;
+  final VoidCallback onLogout;
+
+  // Logout Service
+  UserHome({super.key, required this.title, required this.onLogout});
+
+  // Chat Service
+  final ChatService chatService = ChatService();
+  final FirebaseAuthService _authService = FirebaseAuthService();
 
   @override
   State<UserHome> createState() => _UserHomeState();
@@ -18,6 +30,26 @@ class _UserHomeState extends State<UserHome> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
+  void _logout(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', false);
+      widget.onLogout(); // Notify the parent widget
+      Navigator.pushReplacementNamed(context, "/main");
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to log out. Please try again.')),
+      );
+    }
+  }
+
+  // @override
+  // void dispose() {
+  //   controller.dispose();
+  //   super.dispose();
+  // }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -26,7 +58,7 @@ class _UserHomeState extends State<UserHome> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _widgetOptions = <Widget>[
+    List<Widget> widgetOptions = <Widget>[
       Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -62,8 +94,8 @@ class _UserHomeState extends State<UserHome> {
               ),
             ),
             ListTile(
-              leading:
-                  const Icon(Icons.bookmark, color: Colors.red, size: 30.0),
+              leading: Icon(Icons.bookmark,
+                  color: Theme.of(context).colorScheme.primary, size: 30.0),
               title: Text(
                 'Choose a saved place',
                 style: TextStyle(
@@ -72,8 +104,8 @@ class _UserHomeState extends State<UserHome> {
               ),
             ),
             ListTile(
-              leading:
-                  const Icon(Icons.pin_drop, color: Colors.red, size: 30.0),
+              leading: Icon(Icons.pin_drop,
+                  color: Theme.of(context).colorScheme.primary, size: 30.0),
               title: Text(
                 'Set destination on map',
                 style: TextStyle(
@@ -92,13 +124,16 @@ class _UserHomeState extends State<UserHome> {
           ],
         ),
       ),
-      Center(child: Text('Chat', style: optionStyle)),
+      //Center(child: Text('Chat', style: optionStyle)),
+      _buildUserList(),
       Center(child: Text('Call', style: optionStyle)),
       Center(child: Text('Profile', style: optionStyle)),
     ];
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: Row(
           children: [
             Image.asset(
@@ -111,13 +146,8 @@ class _UserHomeState extends State<UserHome> {
         ),
       ),
       body: FooterView(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: _widgetOptions[_selectedIndex],
-          ),
-        ],
         footer: Footer(
+          padding: const EdgeInsets.all(5.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -168,16 +198,26 @@ class _UserHomeState extends State<UserHome> {
               ),
             ],
           ),
-          padding: const EdgeInsets.all(5.0),
         ),
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            child: widgetOptions[_selectedIndex],
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.red),
-              child: Text('SCU-Safewalk'),
+            DrawerHeader(
+              decoration:
+                  BoxDecoration(color: Theme.of(context).colorScheme.primary),
+              //child: Text('SCU-Safewalk'),
+              child: Image.asset(
+                'assets/images/logo_red.png', // Path to your logo
+                fit: BoxFit.contain,
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.home, color: Colors.black, size: 30.0),
@@ -217,9 +257,63 @@ class _UserHomeState extends State<UserHome> {
                 Navigator.pop(context);
               },
             ),
+            SizedBox(height: 380),
+            ListTile(
+                leading:
+                    const Icon(Icons.logout, color: Colors.black, size: 30.0),
+                title: const Text('Logout'),
+                selected: _selectedIndex == 4,
+                onTap: () {
+                  _logout(context);
+                }),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildUserList() {
+    return StreamBuilder(
+      stream: widget.chatService.getUsersStream(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text('Loading...');
+        }
+
+        return ListView(
+          shrinkWrap: true,
+          children: snapshot.data!
+              .map<Widget>((userData) => _buildUserListItem(userData, context))
+              .toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildUserListItem(
+      Map<String, dynamic> userData, BuildContext context) {
+    if (userData['email'] != widget._authService.getCurrentUser()!.email!) {
+      String username = userData['email'].split('@')[0];
+
+      return UserTile(
+        text: username,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChatPage(
+                      receiverId: userData['uid'],
+                      receiverEmail: userData['email'],
+                    )),
+          );
+        },
+      );
+    } else {
+      return Container();
+    }
   }
 }
