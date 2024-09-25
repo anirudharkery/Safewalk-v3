@@ -164,7 +164,9 @@ class OSMMapController with ChangeNotifier {
   Future<List<GeoPoint>?> fetchRoute(
       GeoPoint source, GeoPoint destination) async {
     final url =
-        'http://router.project-osrm.org/route/v1/foot/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=full&geometries=geojson';
+        "https://routing.openstreetmap.de/routed-foot/route/v1/driving/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=false&alternatives=true&steps=true";
+    // final url =
+    //     'http://router.project-osrm.org/route/v1/foot/${source.longitude},${source.latitude};${destination.longitude},${destination.latitude}?overview=full&geometries=geojson';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
