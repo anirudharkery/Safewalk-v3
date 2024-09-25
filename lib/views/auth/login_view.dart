@@ -110,6 +110,7 @@ class LoginView extends StatelessWidget {
         MaterialPageRoute(
           builder: (context) => UserHome(
             title: "SafeWalk",
+            onLogout: () {},
           ),
         ),
       );
