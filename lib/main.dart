@@ -31,6 +31,7 @@ Future<void> main() async {
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
   runApp(MyApp(isLoggedIn: isLoggedIn));
+  
 }
 
 ThemeData customeTheme(BuildContext context) {

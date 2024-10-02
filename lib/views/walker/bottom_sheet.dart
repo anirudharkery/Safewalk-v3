@@ -11,7 +11,7 @@ class Sheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    LocationStream? _locationStream =
+    LocationStream? locationStream =
         LocationStream(); // IT will rebuild the refreshing widget
     return DraggableScrollableSheet(
       key: sheet,
@@ -39,7 +39,7 @@ class Sheet extends StatelessWidget {
                   // to get location distance data from Streams.
 
                   StreamBuilder(
-                      stream: _locationStream!.stream,
+                      stream: locationStream.stream,
                       builder: (context, snapshot) {
                         //print("snapshot ${snapshot.hasData}");
                         if (!snapshot.hasData) {

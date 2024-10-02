@@ -135,7 +135,7 @@ class _UserHomeState extends State<UserHome> {
                 
               ),
             ),
-            Container(
+            SizedBox(
               width: 300,
               height: 300,
               // child: Text("Hello"),

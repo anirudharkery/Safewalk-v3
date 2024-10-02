@@ -18,6 +18,7 @@ class MapContollerProvider extends ChangeNotifier {
 
   MapController get controller => mapcontroller;
 
+  @override
   void dispose() {
     mapcontroller.dispose();
   }
