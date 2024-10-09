@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import './home_view.dart';
 import 'auth/login_view.dart';
 
 class MainView extends StatelessWidget {

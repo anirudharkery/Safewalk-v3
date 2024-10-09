@@ -90,6 +90,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    print("isLoggedIn: $isLoggedIn");
     return MaterialApp(
       title: "SafeWalk",
       theme: customeTheme(context),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 //import 'package:safewalk/views/auth/login_view.dart';
-import 'package:safewalk/views/login_view.dart';
+import 'package:safewalk/views/auth/login_view.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});

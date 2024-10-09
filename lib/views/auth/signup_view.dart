@@ -118,11 +118,20 @@ class SignUpViewState extends State<SignUpView> {
     User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
     if (user != null) {
-      // TODO: Navigate to Login View and Show Success Message
-      print("User signed up successfully");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('User sign up successful. Please verify your email.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     } else {
-      // TODO: Show Error Message
-      print("User sign up failed");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'User sign up failed. Please make sure you are using an SCU email.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
     }
   }
 }
