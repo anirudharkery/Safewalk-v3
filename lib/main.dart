@@ -45,6 +45,7 @@ Future<void> main() async {
       child: MyApp(isLoggedIn: isLoggedIn),
     ),
   );
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 ThemeData customeTheme(BuildContext context) {
