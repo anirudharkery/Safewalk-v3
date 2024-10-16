@@ -1,6 +1,6 @@
 # safewalk
 
-SafeWalk
+
 SafeWalk is a Flutter-based mobile application designed to enhance personal safety by connecting users with volunteer escorts for their walking trips. The app allows users to input their start and end locations, visualizes the route on a map, and automatically assigns available volunteers to accompany them.
 Key Features:
 
