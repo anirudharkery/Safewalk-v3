@@ -1,73 +1,111 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:safewalk/controllers/map_controllers.dart';
+import "package:safewalk/data/trip_progress.dart";
+import 'package:safewalk/data/trip_stops.dart';
+import 'package:safewalk/views/walker/trip_data.dart';
 
 class TripInfo extends StatelessWidget {
   const TripInfo({super.key});
 
   @override
   Widget build(BuildContext context) {
+    TripProgress tripProgress =
+        context.watch<OSMMapController>().getTripProgrsess;
     final remainingDistance =
         context.watch<OSMMapController>().remainingDistance;
+    TripStops tripStops = context.watch<OSMMapController>().tripStops;
+
     Widget getBody(double? remainingDistance) {
       print("remainingDistance: $remainingDistance");
       if (remainingDistance == null) {
         return Center(
           child: Text(
-            "Fetching Data...",
+            "Waiting for walker to accept request...",
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
             ),
           ),
         );
-      } else if (remainingDistance <= 0.10) {
-        return Center(
-          child: Text(
-            "Arrived!",
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        );
-      } else {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "${remainingDistance.toStringAsFixed(2)} km",
-              style: const TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Container(
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              child: const Icon(
-                Icons.directions_walk,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              "${context.watch<OSMMapController>().remainingDuration!.toStringAsFixed(2)} min",
+      }
+
+      switch (tripProgress) {
+        case TripProgress.walkerRequested:
+          return Center(
+            child: Text(
+              "Waiting for walker to accept request...",
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ],
-        );
+          );
+        case TripProgress.walkerAccepted:
+          return Center(
+            child: Text(
+              "Waiting for walker to start trip...",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        case TripProgress.walkerStarted:
+          return TripData(remainingDistance: remainingDistance);
+        case TripProgress.walkerArrived:
+          //chnage destination
+          context.read<OSMMapController>().destination =
+              tripStops.userDestinationPoints;
+          Future.delayed(const Duration(seconds: 3), () {
+            context.read<OSMMapController>().setTripProgress =
+                TripProgress.userJoined;
+          });
+          return Center(
+            child: Text(
+              "your walker has arrived",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        case TripProgress.userJoined:
+          Future.delayed(const Duration(seconds: 3), () {
+            context.read<OSMMapController>().setTripProgress =
+                TripProgress.userstarted;
+          });
+          return Center(
+            child: Text(
+              "Waiting for user to start trip...",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        case TripProgress.userstarted:
+          return TripData(remainingDistance: remainingDistance);
+        case TripProgress.userArrived:
+          return Center(
+            child: Text(
+              "user has arrived",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        case TripProgress.tripCompleted:
+          return Center(
+            child: Text(
+              "trip completed",
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
       }
     }
 

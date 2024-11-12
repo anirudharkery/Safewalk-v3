@@ -4,6 +4,7 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:safewalk/controllers/map_controllers.dart';
+import 'package:safewalk/data/trip_stops.dart';
 import './osm_map/osm_map.dart';
 import 'package:safewalk/views/walker/walker_view.dart';
 
@@ -30,8 +31,8 @@ class _SearchPageState extends State<SearchPage> {
     //Provider.of<OSMMapController>(context, listen: false).startTracking();
   }
 
-  Future<void> _searchLocation(
-      BuildContext context, String address, bool isStart) async {
+  Future<GeoPoint?> _searchLocation(
+      BuildContext context, String address) async {
     final url =
         'https://nominatim.openstreetmap.org/search?q=$address&format=json&limit=1';
     final response = await http.get(Uri.parse(url));
@@ -42,37 +43,42 @@ class _SearchPageState extends State<SearchPage> {
       if (data.isNotEmpty) {
         final double latitude = double.parse(data[0]['lat']);
         final double longitude = double.parse(data[0]['lon']);
-        if (isStart) {
-          startPoint = GeoPoint(latitude: latitude, longitude: longitude);
-        } else {
-          endPoint = GeoPoint(latitude: latitude, longitude: longitude);
-          context.read<OSMMapController>().setDestination(endPoint!);
-        }
-        print("start: $startAddress, end: $destinationAddress");
-        if (startPoint != null && endPoint != null) {
-          // Add markers
-          print('Adding markers');
-          context
-              .read<OSMMapController>()
-              .addMarkers(point: startPoint!, color: Colors.blue);
-          context
-              .read<OSMMapController>()
-              .addMarkers(point: endPoint!, color: Colors.red);
+        return GeoPoint(latitude: latitude, longitude: longitude);
+        //   if (isStart) {
+        //     startPoint = GeoPoint(latitude: latitude, longitude: longitude);
+        //   } else {
+        //     endPoint = GeoPoint(latitude: latitude, longitude: longitude);
+        //     context.read<OSMMapController>().setDestination(endPoint!);
+        //   }
+        //   print("start: $startAddress, end: $destinationAddress");
+        //   if (startPoint != null && endPoint != null) {
+        //     // Add markers
+        //     print('Adding markers');
+        //     context
+        //         .read<OSMMapController>()
+        //         .addMarkers(point: startPoint!, color: Colors.blue);
+        //     context
+        //         .read<OSMMapController>()
+        //         .addMarkers(point: endPoint!, color: Colors.red);
 
-          setState(() {
-            locationSelected = true;
-            startPoint = startPoint;
-            endPoint = endPoint;
-          });
-        }
+        //     setState(() {
+        //       locationSelected = true;
+        //       startPoint = startPoint;
+        //       endPoint = endPoint;
+        //     });
+        //   }
+        // }
+      } else {
+        print(response.statusCode);
+        print(response.body);
+        throw Exception('Failed to load location');
       }
-    } else {
-      print(response.statusCode);
-      print(response.body);
     }
   }
 
   Widget _displayOptions() {
+    // TripStops tripStops = context.watch<OSMMapController>().tripStops;
+
     print("location selected: $locationSelected, bottom: $showBottom");
     if (!locationSelected && !showBottom) {
       return Positioned(
@@ -91,12 +97,23 @@ class _SearchPageState extends State<SearchPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                 ),
-                onSubmitted: (value) {
+                onSubmitted: (value) async {
                   setState(() {
                     startAddress = value;
-                    context.read<OSMMapController>().setStartAddress(value);
                   });
-                  _searchLocation(context, value, true);
+                  context.read<OSMMapController>().setStartAddress(value);
+                  GeoPoint? geoPoints = await _searchLocation(context, value);
+                  context
+                      .read<OSMMapController>()
+                      .tripStops
+                      .setUserPickup(value, geoPoints!);
+                  context
+                      .read<OSMMapController>()
+                      .addMarkers(point: geoPoints!, color: Colors.blue);
+                  context
+                      .read<OSMMapController>()
+                      .tripStops
+                      .setWalkerDestination(value, geoPoints!);
                 },
               ),
               SizedBox(height: 10),
@@ -111,28 +128,29 @@ class _SearchPageState extends State<SearchPage> {
                   filled: true,
                   fillColor: Colors.grey[200],
                 ),
-                onSubmitted: (value) {
+                onSubmitted: (value) async {
                   setState(() {
                     destinationAddress = value;
                     context
                         .read<OSMMapController>()
                         .setDestinationAddress(value);
+                    locationSelected = true;
                   });
                   //value = destinationAddress;
-                  _searchLocation(context, value, false);
+                  GeoPoint? geoPoints = await _searchLocation(context, value);
+                  context
+                      .read<OSMMapController>()
+                      .tripStops
+                      .setUserDestination(value, geoPoints!);
+                  context
+                      .read<OSMMapController>()
+                      .addMarkers(point: geoPoints!, color: Colors.red);
+                  context
+                      .read<OSMMapController>()
+                      .tripStops
+                      .setWalkerPickup(value, geoPoints!);
                 },
               ),
-              // ListTile(
-              //   style: ListTileStyle(
-
-              //   ),
-              //   leading: Icon(Icons.bookmark, color: Colors.black),
-              //   title: Text('Saved Places'),
-              //   trailing: Icon(Icons.arrow_forward_ios),
-              //   onTap: () {
-              //     // Navigate to saved places
-              //   },
-              // ),
             ],
           ),
         ),
@@ -156,7 +174,8 @@ class _SearchPageState extends State<SearchPage> {
       );
     } else {
       return WalkerView(
-        endPoint: endPoint!,
+        endPoint:
+            context.read<OSMMapController>().tripStops.userDestinationPoints,
       );
     }
   }

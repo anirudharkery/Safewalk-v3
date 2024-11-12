@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
+import 'package:safewalk/data/trip_progress.dart';
+import 'package:safewalk/data/trip_stops.dart';
 
 /// Mix-in [DiagnosticableTreeMixin] to have access to [debugFillProperties] for the devtool
 // ignore: prefer_mixin
@@ -15,14 +17,35 @@ class OSMMapController with ChangeNotifier {
   double? _remainingDuration;
   GeoPoint? prevLocation;
   GeoPoint? _destination;
+  GeoPoint? get destination => _destination;
+  set destination(GeoPoint? destination) {
+    _destination = destination;
+  }
+
   double? get remainingDistance => _remainingDistance;
   double? get remainingDuration => _remainingDuration;
+
+  //Trip progress info
+  TripProgress tripProgress = TripProgress.walkerRequested;
+  TripProgress get getTripProgrsess => tripProgress;
+  // setter for trip progress
+  set setTripProgress(TripProgress newTripProgress) {
+    tripProgress = newTripProgress;
+    notifyListeners();
+  }
+
   MapController mapcontroller = MapController.withUserPosition(
     trackUserLocation: const UserTrackingOption(
       enableTracking: true,
       unFollowUser: false,
     ),
   );
+
+  StreamSubscription<Position>? _positionSubscription;
+
+  //Trip Stops
+  TripStops tripStops = TripStops();
+  TripStops get getTripStops => tripStops;
 
   /// Adds a marker to the map at [point] with the color [color].
   ///
@@ -68,10 +91,12 @@ class OSMMapController with ChangeNotifier {
 
   void setDestinationAddress(String address) {
     destinationAddress = address;
+    //tripStops.setUserDestination(address);
   }
 
   void setStartAddress(String address) {
     startAddress = address;
+    //tripStops.setUserPickup(address);
   }
 
   /// Start listening to location changes
@@ -84,7 +109,12 @@ class OSMMapController with ChangeNotifier {
   void startTracking() {
     // Start listening to location changes
     print("start tracking");
-    Geolocator.getPositionStream(
+    //change tripprogress to walker started
+    tripProgress = TripProgress.walkerStarted;
+    _destination = tripStops.walkerDestinationPoints;
+    print("destination: $_destination");
+    // notifyListeners();
+    _positionSubscription = Geolocator.getPositionStream(
       locationSettings: LocationSettings(
         //accuracy: LocationAccuracy.high,
         distanceFilter: 10, // Only update if moved by 10 meters
@@ -128,6 +158,19 @@ class OSMMapController with ChangeNotifier {
             longitude: currentPosition.longitude),
         _destination!,
       );
+      if (remainingDistance! < 0.1 &&
+          tripProgress == TripProgress.walkerStarted) {
+        tripProgress = TripProgress.walkerArrived;
+        _positionSubscription!.cancel();
+        notifyListeners();
+        return;
+      } else if (remainingDistance! < 0.1 &&
+          tripProgress == TripProgress.userArrived) {
+        tripProgress = TripProgress.tripCompleted;
+        _positionSubscription!.cancel();
+        notifyListeners();
+        return;
+      }
       if (route != null) {
         // Clear existing routes and draw the new updated route
         await mapController.clearAllRoads();

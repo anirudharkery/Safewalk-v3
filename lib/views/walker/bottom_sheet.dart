@@ -6,11 +6,12 @@ import 'package:safewalk/controllers/map_controllers.dart';
 import 'package:safewalk/views/walker/trip_info.dart';
 
 class Sheet extends StatelessWidget {
-  Sheet(
-      {super.key,
-      required this.sheet,
-      required this.controller,
-      required this.endPoint});
+  Sheet({
+    super.key,
+    required this.sheet,
+    required this.controller,
+    required this.endPoint,
+  });
   GeoPoint endPoint;
   DraggableScrollableController controller;
 

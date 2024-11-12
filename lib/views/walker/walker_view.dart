@@ -15,7 +15,7 @@ class _WalkerViewState extends State<WalkerView> {
   final _controller = DraggableScrollableController();
 
   Widget? _sheetWidget;
-  Future<RoadInfo>? routeInfo;
+  // Future<RoadInfo>? routeInfo;
   @override
   void initState() {
     super.initState();
