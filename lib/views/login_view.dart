@@ -118,7 +118,7 @@ class LoginView extends StatelessWidget {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserHome(title: "Welcome to SafeWalk", onLogout: () {},)),
+      MaterialPageRoute(builder: (context) => UserHome(title: "Welcome to SafeWalk",/* onLogout: () {},*/)),
     );
     
   } else {

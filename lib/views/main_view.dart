@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-//import './home_view.dart';
+import 'package:safewalk/components/make_call.dart';
 import './login_view.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +83,9 @@ class MainView extends StatelessWidget {
                     width: 334,
                     height: 74,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        makePhoneCall('+15107387444');
+                      },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -121,7 +124,9 @@ class MainView extends StatelessWidget {
                     width: 334,
                     height: 74,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        makePhoneCall('+11234567890');
+                      },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
