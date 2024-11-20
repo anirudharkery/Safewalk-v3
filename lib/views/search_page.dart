@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:safewalk/controllers/map_controllers.dart';
@@ -17,18 +18,28 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   String startAddress = 'Santa Clara University';
-
   String destinationAddress = 'Santa Clara Transit Center';
-
   GeoPoint? startPoint;
-
   GeoPoint? endPoint;
-
   bool locationSelected = false;
   bool showBottom = false;
+
+  @override
   void initState() {
     super.initState();
     //Provider.of<OSMMapController>(context, listen: false).startTracking();
+  }
+
+  Future<List<String>> _getSuggestions(String query) async {
+    final response = await http.get(Uri.parse(
+        'https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&limit=5'));
+
+    if (response.statusCode == 200) {
+      final List data = json.decode(response.body);
+      return data.map((item) => item['display_name'] as String).toList();
+    } else {
+      throw Exception('Failed to load suggestions');
+    }
   }
 
   Future<GeoPoint?> _searchLocation(
@@ -39,46 +50,19 @@ class _SearchPageState extends State<SearchPage> {
 
     if (response.statusCode == 200) {
       final List data = json.decode(response.body);
-      print(data);
       if (data.isNotEmpty) {
         final double latitude = double.parse(data[0]['lat']);
         final double longitude = double.parse(data[0]['lon']);
         return GeoPoint(latitude: latitude, longitude: longitude);
-        //   if (isStart) {
-        //     startPoint = GeoPoint(latitude: latitude, longitude: longitude);
-        //   } else {
-        //     endPoint = GeoPoint(latitude: latitude, longitude: longitude);
-        //     context.read<OSMMapController>().setDestination(endPoint!);
-        //   }
-        //   print("start: $startAddress, end: $destinationAddress");
-        //   if (startPoint != null && endPoint != null) {
-        //     // Add markers
-        //     print('Adding markers');
-        //     context
-        //         .read<OSMMapController>()
-        //         .addMarkers(point: startPoint!, color: Colors.blue);
-        //     context
-        //         .read<OSMMapController>()
-        //         .addMarkers(point: endPoint!, color: Colors.red);
-
-        //     setState(() {
-        //       locationSelected = true;
-        //       startPoint = startPoint;
-        //       endPoint = endPoint;
-        //     });
-        //   }
-        // }
       } else {
-        print(response.statusCode);
-        print(response.body);
         throw Exception('Failed to load location');
       }
+    } else {
+      throw Exception('Failed to load location');
     }
   }
 
   Widget _displayOptions() {
-    // TripStops tripStops = context.watch<OSMMapController>().tripStops;
-
     print("location selected: $locationSelected, bottom: $showBottom");
     if (!locationSelected && !showBottom) {
       return Positioned(
@@ -86,69 +70,127 @@ class _SearchPageState extends State<SearchPage> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              TextField(
-                decoration: InputDecoration(
-                  prefixIcon:
-                      Icon(Icons.circle, color: Colors.black, size: 15.0),
-                  hintText: startAddress,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+              TypeAheadField(
+                textFieldConfiguration: TextFieldConfiguration(
+                  decoration: InputDecoration(
+                    prefixIcon:
+                        Icon(Icons.circle, color: Colors.black, size: 15.0),
+                    hintText: startAddress,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
+                  onSubmitted: (value) async {
+                    setState(() {
+                      startAddress = value;
+                    });
+                    context.read<OSMMapController>().setStartAddress(value);
+                    GeoPoint? geoPoints = await _searchLocation(context, value);
+                    context
+                        .read<OSMMapController>()
+                        .tripStops
+                        .setUserPickup(value, geoPoints!);
+                    context
+                        .read<OSMMapController>()
+                        .addMarkers(point: geoPoints, color: Colors.blue);
+                    context
+                        .read<OSMMapController>()
+                        .tripStops
+                        .setWalkerDestination(value, geoPoints);
+                  },
                 ),
-                onSubmitted: (value) async {
+                suggestionsCallback: (pattern) async {
+                  return await _getSuggestions(pattern);
+                },
+                itemBuilder: (context, suggestion) {
+                  return ListTile(
+                    title: Text(suggestion),
+                  );
+                },
+                onSuggestionSelected: (suggestion) async {
                   setState(() {
-                    startAddress = value;
+                    startAddress = suggestion;
                   });
-                  context.read<OSMMapController>().setStartAddress(value);
-                  GeoPoint? geoPoints = await _searchLocation(context, value);
+                  context.read<OSMMapController>().setStartAddress(suggestion);
+                  GeoPoint? geoPoints = await _searchLocation(context, suggestion);
                   context
                       .read<OSMMapController>()
                       .tripStops
-                      .setUserPickup(value, geoPoints!);
+                      .setUserPickup(suggestion, geoPoints!);
                   context
                       .read<OSMMapController>()
-                      .addMarkers(point: geoPoints!, color: Colors.blue);
+                      .addMarkers(point: geoPoints, color: Colors.blue);
                   context
                       .read<OSMMapController>()
                       .tripStops
-                      .setWalkerDestination(value, geoPoints!);
+                      .setWalkerDestination(suggestion, geoPoints);
                 },
               ),
               SizedBox(height: 10),
-              TextField(
-                decoration: InputDecoration(
-                  prefixIcon:
-                      Icon(Icons.circle, color: Colors.grey, size: 15.0),
-                  hintText: 'Where to?',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+              TypeAheadField(
+                textFieldConfiguration: TextFieldConfiguration(
+                  decoration: InputDecoration(
+                    prefixIcon:
+                        Icon(Icons.circle, color: Colors.grey, size: 15.0),
+                    hintText: 'Where to?',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                ),
-                onSubmitted: (value) async {
-                  setState(() {
-                    destinationAddress = value;
+                  onSubmitted: (value) async {
+                    setState(() {
+                      destinationAddress = value;
+                      context
+                          .read<OSMMapController>()
+                          .setDestinationAddress(value);
+                      locationSelected = true;
+                    });
+                    GeoPoint? geoPoints = await _searchLocation(context, value);
                     context
                         .read<OSMMapController>()
-                        .setDestinationAddress(value);
+                        .tripStops
+                        .setUserDestination(value, geoPoints!);
+                    context
+                        .read<OSMMapController>()
+                        .addMarkers(point: geoPoints, color: Colors.red);
+                    context
+                        .read<OSMMapController>()
+                        .tripStops
+                        .setWalkerPickup(value, geoPoints);
+                  },
+                ),
+                suggestionsCallback: (pattern) async {
+                  return await _getSuggestions(pattern);
+                },
+                itemBuilder: (context, suggestion) {
+                  return ListTile(
+                    title: Text(suggestion),
+                  );
+                },
+                onSuggestionSelected: (suggestion) async {
+                  setState(() {
+                    destinationAddress = suggestion;
+                    context
+                        .read<OSMMapController>()
+                        .setDestinationAddress(suggestion);
                     locationSelected = true;
                   });
-                  //value = destinationAddress;
-                  GeoPoint? geoPoints = await _searchLocation(context, value);
+                  GeoPoint? geoPoints = await _searchLocation(context, suggestion);
                   context
                       .read<OSMMapController>()
                       .tripStops
-                      .setUserDestination(value, geoPoints!);
+                      .setUserDestination(suggestion, geoPoints!);
                   context
                       .read<OSMMapController>()
-                      .addMarkers(point: geoPoints!, color: Colors.red);
+                      .addMarkers(point: geoPoints, color: Colors.red);
                   context
                       .read<OSMMapController>()
                       .tripStops
-                      .setWalkerPickup(value, geoPoints!);
+                      .setWalkerPickup(suggestion, geoPoints);
                 },
               ),
             ],
