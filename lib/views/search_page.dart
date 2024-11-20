@@ -7,6 +7,7 @@ import 'package:safewalk/controllers/map_controllers.dart';
 import 'package:safewalk/data/trip_stops.dart';
 import './osm_map/osm_map.dart';
 import 'package:safewalk/views/walker/walker_view.dart';
+import 'package:safewalk/data/trip_progress.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key? key}) : super(key: key);
@@ -29,6 +30,20 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     super.initState();
     //Provider.of<OSMMapController>(context, listen: false).startTracking();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    Provider.of<OSMMapController>(context, listen: false).tripProgress =
+        TripProgress.tripCompleted;
+    Provider.of<OSMMapController>(context, listen: false).setTripProgress =
+        TripProgress.tripCompleted;
+    Provider.of<OSMMapController>(context, listen: false).tripStops =
+        TripStops();
+    Provider.of<OSMMapController>(context, listen: false).dispose();
+
+    print("disposed");
   }
 
   Future<GeoPoint?> _searchLocation(
@@ -163,7 +178,9 @@ class _SearchPageState extends State<SearchPage> {
           onPressed: () {
             // TODO: add route drawing
             Provider.of<OSMMapController>(context, listen: false)
-                .startTracking();
+                .startTracking(who: "walker");
+            Provider.of<OSMMapController>(context, listen: false).tripProgress =
+                TripProgress.walkerRequested;
             setState(() {
               showBottom = true;
             });

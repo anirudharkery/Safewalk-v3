@@ -106,13 +106,24 @@ class OSMMapController with ChangeNotifier {
   /// if a destination is set.
   ///
   /// The function notifies the listeners after adding a marker and updating the route.
-  void startTracking() {
+  void startTracking({String who = "walker"}) {
     // Start listening to location changes
     print("start tracking");
     //change tripprogress to walker started
-    tripProgress = TripProgress.walkerStarted;
-    _destination = tripStops.walkerDestinationPoints;
-    print("destination: $_destination");
+    print("who: $who");
+    print("tripProgress: ${tripProgress.toString()}");
+    print("tripStops: ${tripStops.toString()}");
+    switch (who) {
+      case "walker":
+        _destination = tripStops.walkerDestinationPoints;
+
+      case "user":
+        _destination = tripStops.userDestinationPoints;
+      //tripProgress = TripProgress.userstarted;
+
+      default:
+        _destination = tripStops.userDestinationPoints;
+    }
     // notifyListeners();
     _positionSubscription = Geolocator.getPositionStream(
       locationSettings: LocationSettings(
@@ -158,15 +169,15 @@ class OSMMapController with ChangeNotifier {
             longitude: currentPosition.longitude),
         _destination!,
       );
-      if (remainingDistance! < 0.1 &&
+      if (remainingDistance! <= 0.10 &&
           tripProgress == TripProgress.walkerStarted) {
         tripProgress = TripProgress.walkerArrived;
         _positionSubscription!.cancel();
         notifyListeners();
         return;
-      } else if (remainingDistance! < 0.1 &&
-          tripProgress == TripProgress.userArrived) {
-        tripProgress = TripProgress.tripCompleted;
+      } else if (remainingDistance! <= 0.10 &&
+          tripProgress == TripProgress.userstarted) {
+        tripProgress = TripProgress.userArrived;
         _positionSubscription!.cancel();
         notifyListeners();
         return;

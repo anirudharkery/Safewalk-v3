@@ -32,6 +32,10 @@ class TripInfo extends StatelessWidget {
 
       switch (tripProgress) {
         case TripProgress.walkerRequested:
+          Future.delayed(const Duration(seconds: 2), () {
+            context.read<OSMMapController>().setTripProgress =
+                TripProgress.walkerAccepted;
+          });
           return Center(
             child: Text(
               "Waiting for walker to accept request...",
@@ -42,6 +46,10 @@ class TripInfo extends StatelessWidget {
             ),
           );
         case TripProgress.walkerAccepted:
+          Future.delayed(const Duration(seconds: 3), () {
+            context.read<OSMMapController>().setTripProgress =
+                TripProgress.walkerStarted;
+          });
           return Center(
             child: Text(
               "Waiting for walker to start trip...",
@@ -54,12 +62,13 @@ class TripInfo extends StatelessWidget {
         case TripProgress.walkerStarted:
           return TripData(remainingDistance: remainingDistance);
         case TripProgress.walkerArrived:
-          //chnage destination
-          context.read<OSMMapController>().destination =
-              tripStops.userDestinationPoints;
+          // //chnage destination
+          // context.read<OSMMapController>().destination =
+          //     tripStops.userDestinationPoints;
           Future.delayed(const Duration(seconds: 3), () {
             context.read<OSMMapController>().setTripProgress =
                 TripProgress.userJoined;
+            context.read<OSMMapController>().startTracking(who: "user");
           });
           return Center(
             child: Text(
