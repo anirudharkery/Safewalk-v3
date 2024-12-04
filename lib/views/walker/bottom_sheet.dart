@@ -10,9 +10,8 @@ class Sheet extends StatelessWidget {
     super.key,
     required this.sheet,
     required this.controller,
-    required this.endPoint,
   });
-  GeoPoint endPoint;
+
   DraggableScrollableController controller;
 
   Key sheet;
@@ -42,7 +41,9 @@ class Sheet extends StatelessWidget {
             controller: scrollController,
             children: [
               const Icon(Icons.arrow_drop_up),
-              TripInfo(),
+              TripInfo(
+                tripId: context.read<OSMMapController>().firebaseTripId!,
+              ),
               Center(
                 child: Text(
                   'Picking up Joanna',

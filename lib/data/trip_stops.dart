@@ -17,7 +17,8 @@ class TripStops {
   String _userDestination = '';
   GeoPoint _userDestinationPoints = GeoPoint(latitude: 0, longitude: 0);
   String _walkerPickup = '';
-  GeoPoint _walkerPickupPoints = GeoPoint(latitude: 0, longitude: 0);
+  GeoPoint _walkerPickupPoints =
+      GeoPoint(latitude: 37.3531034, longitude: -121.936229);
   String _walkerDestination = '';
   GeoPoint _walkerDestinationPoints = GeoPoint(latitude: 0, longitude: 0);
 
@@ -60,4 +61,54 @@ class TripStops {
   GeoPoint get walkerPickupPoints => _walkerPickupPoints;
   String get walkerDestination => _walkerDestination;
   GeoPoint get walkerDestinationPoints => _walkerDestinationPoints;
+
+  // Convert to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'userPickup': _userPickup,
+      'userPickupPoints': {
+        'latitude': _userPickupPoints.latitude,
+        'longitude': _userPickupPoints.longitude,
+      },
+      'userDestination': _userDestination,
+      'userDestinationPoints': {
+        'latitude': _userDestinationPoints.latitude,
+        'longitude': _userDestinationPoints.longitude,
+      },
+      'walkerPickup': _walkerPickup,
+      'walkerPickupPoints': {
+        'latitude': _walkerPickupPoints.latitude,
+        'longitude': _walkerPickupPoints.longitude,
+      },
+      'walkerDestination': _walkerDestination,
+      'walkerDestinationPoints': {
+        'latitude': _walkerDestinationPoints.latitude,
+        'longitude': _walkerDestinationPoints.longitude,
+      },
+    };
+  }
+
+  // Create from JSON
+  TripStops.fromJson(Map<String, dynamic> json) {
+    _userPickup = json['userPickup'] ?? '';
+    _userPickupPoints = GeoPoint(
+      latitude: json['userPickupPoints']['latitude'],
+      longitude: json['userPickupPoints']['longitude'],
+    );
+    _userDestination = json['userDestination'] ?? '';
+    _userDestinationPoints = GeoPoint(
+      latitude: json['userDestinationPoints']['latitude'],
+      longitude: json['userDestinationPoints']['longitude'],
+    );
+    _walkerPickup = json['walkerPickup'] ?? '';
+    _walkerPickupPoints = GeoPoint(
+      latitude: json['walkerPickupPoints']['latitude'],
+      longitude: json['walkerPickupPoints']['longitude'],
+    );
+    _walkerDestination = json['walkerDestination'] ?? '';
+    _walkerDestinationPoints = GeoPoint(
+      latitude: json['walkerDestinationPoints']['latitude'],
+      longitude: json['walkerDestinationPoints']['longitude'],
+    );
+  }
 }

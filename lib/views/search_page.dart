@@ -1,10 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:safewalk/controllers/map_controllers.dart';
+// import 'package:safewalk/controllers/new_map_controller.dart';
+
 import 'package:safewalk/data/trip_stops.dart';
 import './osm_map/osm_map.dart';
 import 'package:safewalk/views/walker/walker_view.dart';
@@ -109,10 +113,10 @@ class _SearchPageState extends State<SearchPage> {
                     context
                         .read<OSMMapController>()
                         .addMarkers(point: geoPoints, color: Colors.blue);
-                    context
-                        .read<OSMMapController>()
-                        .tripStops
-                        .setWalkerDestination(value, geoPoints);
+                    // context
+                    //     .read<OSMMapController>()
+                    //     .tripStops
+                    //     .setWalkerDestination(value, geoPoints);
                   },
                 ),
                 suggestionsCallback: (pattern) async {
@@ -172,10 +176,10 @@ class _SearchPageState extends State<SearchPage> {
                     context
                         .read<OSMMapController>()
                         .addMarkers(point: geoPoints, color: Colors.red);
-                    context
-                        .read<OSMMapController>()
-                        .tripStops
-                        .setWalkerPickup(value, geoPoints);
+                    // context
+                    //     .read<OSMMapController>()
+                    //     .tripStops
+                    //     .setWalkerPickup(value, geoPoints);
                   },
                 ),
                 suggestionsCallback: (pattern) async {
@@ -203,10 +207,10 @@ class _SearchPageState extends State<SearchPage> {
                   context
                       .read<OSMMapController>()
                       .addMarkers(point: geoPoints, color: Colors.red);
-                  context
-                      .read<OSMMapController>()
-                      .tripStops
-                      .setWalkerPickup(suggestion, geoPoints);
+                  // context
+                  //     .read<OSMMapController>()
+                  //     .tripStops
+                  //     .setWalkerPickup(suggestion, geoPoints);
                 },
               ),
             ],
@@ -218,12 +222,42 @@ class _SearchPageState extends State<SearchPage> {
         bottom: 20,
         right: 20,
         child: ElevatedButton.icon(
-          onPressed: () {
-            // TODO: add route drawing
-            Provider.of<OSMMapController>(context, listen: false)
-                .startTracking(who: "walker");
-            Provider.of<OSMMapController>(context, listen: false).tripProgress =
-                TripProgress.walkerRequested;
+          onPressed: () async {
+            final tripStops = context.read<OSMMapController>().tripStops;
+
+            // Start tracking
+            try {
+              Provider.of<OSMMapController>(context, listen: false)
+                  .tripProgress = TripProgress.walkerRequested;
+              // Store trip data in Firebase
+              final DatabaseReference tripRef =
+                  FirebaseDatabase.instance.ref('trips').push();
+              print(tripRef.key);
+              context.read<OSMMapController>().firebaseTripId = tripRef.key!;
+
+              await tripRef.set({
+                'tripStops': tripStops.toJson(),
+                'tripProgress':
+                    TripProgress.walkerRequested.toString().split('.').last,
+              });
+              // start tracking walker
+              context
+                  .read<OSMMapController>()
+                  .trackWalkerLocation(tripRef.key!);
+
+              // Provider.of<OSMMapController>(context, listen: false)
+              //     .startTracking(who: "walker");
+            } catch (e) {
+              // Handle and display the error
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Failed to create trip request: $e")),
+              );
+
+              // Optionally, log the error for debugging
+              print("Error creating trip request: $e");
+              return;
+            }
+            // Show bottom sheet
             setState(() {
               showBottom = true;
             });
@@ -233,10 +267,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
       );
     } else {
-      return WalkerView(
-        endPoint:
-            context.read<OSMMapController>().tripStops.userDestinationPoints,
-      );
+      return WalkerView();
     }
   }
 

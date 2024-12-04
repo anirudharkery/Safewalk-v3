@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +18,11 @@ class OSMMapController with ChangeNotifier {
   double? _remainingDuration;
   GeoPoint? prevLocation;
   GeoPoint? _destination;
+  GeoPoint? walkerLocation;
+  GeoPoint? userLocation;
   GeoPoint? get destination => _destination;
+  String? firebaseTripId;
+
   set destination(GeoPoint? destination) {
     _destination = destination;
   }
@@ -99,57 +104,119 @@ class OSMMapController with ChangeNotifier {
     //tripStops.setUserPickup(address);
   }
 
-  /// Start listening to location changes
-  ///
-  /// This function uses the [Geolocator] to listen to location changes.
-  /// It adds a marker at the current location and updates the route on the map
-  /// if a destination is set.
-  ///
-  /// The function notifies the listeners after adding a marker and updating the route.
-  void startTracking({String who = "walker"}) {
-    // Start listening to location changes
-    print("start tracking");
-    //change tripprogress to walker started
-    print("who: $who");
-    print("tripProgress: ${tripProgress.toString()}");
-    print("tripStops: ${tripStops.toString()}");
-    switch (who) {
-      case "walker":
-        _destination = tripStops.walkerDestinationPoints;
+  // Method to start listening to real-time updates
+  void trackWalkerLocation(String tripId) {
+    final DatabaseReference tripRef =
+        FirebaseDatabase.instance.ref('trips/$tripId');
+    _destination = GeoPoint(
+      latitude: tripStops.walkerDestinationPoints.latitude,
+      longitude: tripStops.walkerDestinationPoints.longitude,
+    );
+    tripRef.onValue.listen((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>;
 
-      case "user":
-        _destination = tripStops.userDestinationPoints;
-      //tripProgress = TripProgress.userstarted;
-
-      default:
-        _destination = tripStops.userDestinationPoints;
-    }
-    // notifyListeners();
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(
-        //accuracy: LocationAccuracy.high,
-        distanceFilter: 10, // Only update if moved by 10 meters
-      ),
-    ).listen((Position position) async {
-      if (prevLocation != null) {
-        mapcontroller.removeMarker(prevLocation!);
-      }
-      addMarkers(
-        point: GeoPoint(
-            latitude: position.latitude, longitude: position.longitude),
-        color: Colors.blue,
+      // Update walker location from Firebase
+      walkerLocation = GeoPoint(
+        latitude: data['tripStops']['walkerPickupPoints']['latitude'],
+        longitude: data['tripStops']['walkerPickupPoints']['longitude'],
       );
 
-      prevLocation =
-          GeoPoint(latitude: position.latitude, longitude: position.longitude);
-
+      // Update route to destination
       if (_destination != null) {
-        await updateRoute(mapcontroller, position);
+        updateRoute(walkerLocation!);
+        notifyListeners();
       }
-
-      notifyListeners();
     });
   }
+
+  /// Track the user's location as they walk to the destination.
+  void trackUserToDestination(String tripId) {
+    final DatabaseReference tripRef =
+        FirebaseDatabase.instance.ref('trips/$tripId');
+    tripRef.get().then((value) {
+      final data = value.value as Map<dynamic, dynamic>;
+      _destination = GeoPoint(
+        latitude: data['tripStops']['userDestinationPoints']['latitude'],
+        longitude: data['tripStops']['userDestinationPoints']['longitude'],
+      );
+    });
+
+    _positionSubscription = Geolocator.getPositionStream(
+      locationSettings: LocationSettings(distanceFilter: 10),
+    ).listen((Position position) async {
+      userLocation =
+          GeoPoint(latitude: position.latitude, longitude: position.longitude);
+
+      // Update route to destination
+      if (_destination != null) {
+        if (prevLocation != null) {
+          mapcontroller.removeMarker(prevLocation!);
+        }
+        addMarkers(
+          point: GeoPoint(
+              latitude: position.latitude, longitude: position.longitude),
+          color: Colors.blue,
+        );
+
+        prevLocation = GeoPoint(
+            latitude: position.latitude, longitude: position.longitude);
+
+        await updateRoute(userLocation!);
+      }
+    });
+  }
+
+  // /// Start listening to location changes
+  // ///
+  // /// This function uses the [Geolocator] to listen to location changes.
+  // /// It adds a marker at the current location and updates the route on the map
+  // /// if a destination is set.
+  // ///
+  // /// The function notifies the listeners after adding a marker and updating the route.
+  // void startTracking({String who = "walker"}) {
+  //   // Start listening to location changes
+  //   print("start tracking");
+  //   //change tripprogress to walker started
+  //   print("who: $who");
+  //   print("tripProgress: ${tripProgress.toString()}");
+  //   print("tripStops: ${tripStops.toString()}");
+  //   switch (who) {
+  //     case "walker":
+  //       _destination = tripStops.walkerDestinationPoints;
+
+  //     case "user":
+  //       _destination = tripStops.userDestinationPoints;
+  //     //tripProgress = TripProgress.userstarted;
+
+  //     default:
+  //       _destination = tripStops.userDestinationPoints;
+  //   }
+  //   // notifyListeners();
+  //   _positionSubscription = Geolocator.getPositionStream(
+  //     locationSettings: LocationSettings(
+  //       //accuracy: LocationAccuracy.high,
+  //       distanceFilter: 10, // Only update if moved by 10 meters
+  //     ),
+  //   ).listen((Position position) async {
+  //     if (prevLocation != null) {
+  //       mapcontroller.removeMarker(prevLocation!);
+  //     }
+  //     addMarkers(
+  //       point: GeoPoint(
+  //           latitude: position.latitude, longitude: position.longitude),
+  //       color: Colors.blue,
+  //     );
+
+  //     prevLocation =
+  //         GeoPoint(latitude: position.latitude, longitude: position.longitude);
+
+  //     if (_destination != null) {
+  //       await updateRoute(position);
+  //     }
+
+  //     notifyListeners();
+  //   });
+  // }
 
   // Function to update route from current location to the destination
   /// Update route from current location to the destination on the map.
@@ -159,14 +226,11 @@ class OSMMapController with ChangeNotifier {
   /// by clearing the existing route and drawing the new route.
   ///
   /// The function does not notify the listeners after updating the route.
-  Future<void> updateRoute(
-      MapController mapController, Position currentPosition) async {
+  Future<void> updateRoute(GeoPoint currentPosition) async {
     if (_destination != null) {
       // Fetch the updated route from the current position to the destination
       final route = await fetchRoute(
-        GeoPoint(
-            latitude: currentPosition.latitude,
-            longitude: currentPosition.longitude),
+        currentPosition,
         _destination!,
       );
       if (remainingDistance! <= 0.10 &&
@@ -184,7 +248,7 @@ class OSMMapController with ChangeNotifier {
       }
       if (route != null) {
         // Clear existing routes and draw the new updated route
-        await mapController.clearAllRoads();
+        await mapcontroller.clearAllRoads();
         await mapcontroller.drawRoad(
           GeoPoint(
             latitude: currentPosition.latitude,

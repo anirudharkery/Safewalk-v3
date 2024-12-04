@@ -3,8 +3,7 @@ import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import './bottom_sheet.dart';
 
 class WalkerView extends StatefulWidget {
-  const WalkerView({super.key, required this.endPoint});
-  final GeoPoint endPoint;
+  const WalkerView({super.key});
 
   @override
   State<WalkerView> createState() => _WalkerViewState();
@@ -22,7 +21,6 @@ class _WalkerViewState extends State<WalkerView> {
     _sheetWidget = Sheet(
       sheet: _sheet,
       controller: _controller,
-      endPoint: widget.endPoint,
     );
     _controller.addListener(_onChanged);
     // OSM map controller
