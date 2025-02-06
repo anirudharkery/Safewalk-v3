@@ -35,7 +35,7 @@ class LoginView extends StatelessWidget {
                       width: 224,
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: 10),
               //Welcome Message
               Text(
                 "Welcome to SafeWalk",
@@ -43,6 +43,8 @@ class LoginView extends StatelessWidget {
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                  fontFamily: "Inter",
+
                 ),
               ),
               SizedBox(height: 30),

@@ -183,12 +183,27 @@ class _UserHomeState extends State<UserHome> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Color(0xFFA42035),
         iconTheme: const IconThemeData(color: Colors.white),
         title: Row(
           children: [
-            Image.asset('assets/images/logo_red.png',
-                height: 60), 
+            InkWell(
+              onTap: () {
+                // Navigate to the UserHome widget
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserHome(
+                      title: "Welcome to SafeWalk",
+                    ),
+                  ),
+                );
+              },
+              child: Image.asset(
+                'assets/images/logo_new.png',
+                height: 60,
+              ),
+            ),
             const SizedBox(width: 1),
             Text(
               widget.title,

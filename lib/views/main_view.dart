@@ -59,7 +59,7 @@ class MainView extends StatelessWidget {
                   //Sign in with Google Button
                   //
                   //
-                 GestureDetector(
+                 /*GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -72,6 +72,50 @@ class MainView extends StatelessWidget {
                       child: Image.asset(
                         "./assets/images/signin_google.png", 
                         fit: BoxFit.contain, // Adjust how the image fits within the button
+                      ),
+                    ),
+                  ),*/
+                  SizedBox(
+                    width: 334,
+                    height: 74,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginView()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        backgroundColor: Color(0xFFA42035),
+                      ),    
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          /*Icon(
+                            Icons.phone_in_talk,
+                            color: Colors.black,
+                            size: 40,
+                          ),*/
+                          Image.asset(
+                            "./assets/images/logo_new.png", 
+                            //fit: BoxFit.contain, // Adjust how the image fits within the button
+                          ),
+                          SizedBox(width: 4), // Adjust the spacing between icon and text
+                          Text(
+                            "SCU Login",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 23,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: 0.125,
+                              fontFamily: "Inter",
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -97,7 +141,7 @@ class MainView extends StatelessWidget {
                           Icon(
                             Icons.phone_in_talk,
                             color: Colors.black,
-                            size: 40,
+                            size: 55,
                           ),
                           SizedBox(width: 10), // Adjust the spacing between icon and text
                           Text(
@@ -139,11 +183,11 @@ class MainView extends StatelessWidget {
                           Icon(
                             Icons.error_outline,
                             color: Colors.white,
-                            size: 40,
+                            size: 55,
                           ),
-                          SizedBox(width: 10), // Adjust the spacing between icon and text
+                          SizedBox(width: 20), // Adjust the spacing between icon and text
                           Text(
-                            " Call Campus Safety",
+                            "Campus Safety",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 23,
