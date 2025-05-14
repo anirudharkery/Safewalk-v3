@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'package:safewalk/views/walker/walker_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class SearchPage extends StatefulWidget {
   @override
@@ -155,14 +157,36 @@ class _SearchPageState extends State<SearchPage> {
                     bottom: 16,
                     right: 16,
                     child: ElevatedButton(
-                        onPressed: () {
-                          // Navigate to walker view
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WalkerView(),
-                            ),
-                          );
+                        onPressed: () async {
+                          try {
+                            final user = FirebaseAuth.instance.currentUser;
+                            if (user != null) {
+                              final idToken = await user.getIdToken();
+
+                              // Send this token to your backend or use it for request verification
+                              print("JWT Token: $idToken");
+
+                              // Example: You could also send it via HTTP
+                              // await http.post(
+                              //   Uri.parse('https://your-api.com/verify'),
+                              //   headers: {'Authorization': 'Bearer $idToken'},
+                              // );
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WalkerView(),
+                                ),
+                              );
+                            } else {
+                              // Handle not signed-in user
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("User not signed in")),
+                              );
+                            }
+                          } catch (e) {
+                            print("Error getting token: $e");
+                          }
                         },
                         child: Text("Request"))),
               ],

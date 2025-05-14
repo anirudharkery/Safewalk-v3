@@ -30,6 +30,7 @@ class FirebaseAuthService{
           'email': email,
           'username': email.split('@')[0],
           'uid': credential.user!.uid,
+          'role': 'walkee',
         });
 
         User? user = credential.user;
@@ -63,7 +64,6 @@ class FirebaseAuthService{
           'email': email,
           'username': email.split('@')[0],
           'uid': credential.user!.uid,
-          'role': 'role',
         });
 
       return credential.user;
