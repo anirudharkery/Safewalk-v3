@@ -84,37 +84,40 @@ class _SearchPageState extends State<SearchPage> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.circle, color: Colors.black, size: 15.0),
-                    hintText: startAddress,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+              TypeAheadField<String>(
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.circle, color: Colors.black, size: 15.0),
+                      hintText: startAddress,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
                     ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                  ),
-                  onSubmitted: (value) async {
-                    setState(() {
-                      startAddress = value;
-                    });
-                    context.read<OSMMapController>().setStartAddress(value);
-                    GeoPoint? geoPoints = await _searchLocation(context, value);
-                    context
-                        .read<OSMMapController>()
-                        .tripStops
-                        .setUserPickup(value, geoPoints!);
-                    context
-                        .read<OSMMapController>()
-                        .addMarkers(point: geoPoints, color: Colors.blue);
-                    context
-                        .read<OSMMapController>()
-                        .tripStops
-                        .setWalkerDestination(value, geoPoints);
-                  },
-                ),
+                    onSubmitted: (value) async {
+                      setState(() {
+                        startAddress = value;
+                      });
+                      context.read<OSMMapController>().setStartAddress(value);
+                      GeoPoint? geoPoints = await _searchLocation(context, value);
+                      context
+                          .read<OSMMapController>()
+                          .tripStops
+                          .setUserPickup(value, geoPoints!);
+                      context
+                          .read<OSMMapController>()
+                          .addMarkers(point: geoPoints, color: Colors.blue);
+                      context
+                          .read<OSMMapController>()
+                          .tripStops
+                          .setWalkerDestination(value, geoPoints);
+                    },
+                  );
+                },
                 suggestionsCallback: (pattern) async {
                   return await _getSuggestions(pattern);
                 },
@@ -123,13 +126,12 @@ class _SearchPageState extends State<SearchPage> {
                     title: Text(suggestion),
                   );
                 },
-                onSuggestionSelected: (suggestion) async {
+                onSelected: (suggestion) async {
                   setState(() {
                     startAddress = suggestion;
                   });
                   context.read<OSMMapController>().setStartAddress(suggestion);
-                  GeoPoint? geoPoints =
-                      await _searchLocation(context, suggestion);
+                  GeoPoint? geoPoints = await _searchLocation(context, suggestion);
                   context
                       .read<OSMMapController>()
                       .tripStops
@@ -144,40 +146,43 @@ class _SearchPageState extends State<SearchPage> {
                 },
               ),
               SizedBox(height: 10),
-              TypeAheadField(
-                textFieldConfiguration: TextFieldConfiguration(
-                  decoration: InputDecoration(
-                    prefixIcon:
-                        Icon(Icons.circle, color: Colors.grey, size: 15.0),
-                    hintText: 'Where to?',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+              TypeAheadField<String>(
+                builder: (context, controller, focusNode) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.circle, color: Colors.grey, size: 15.0),
+                      hintText: 'Where to?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
                     ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                  ),
-                  onSubmitted: (value) async {
-                    setState(() {
-                      destinationAddress = value;
+                    onSubmitted: (value) async {
+                      setState(() {
+                        destinationAddress = value;
+                        context
+                            .read<OSMMapController>()
+                            .setDestinationAddress(value);
+                        locationSelected = true;
+                      });
+                      GeoPoint? geoPoints = await _searchLocation(context, value);
                       context
                           .read<OSMMapController>()
-                          .setDestinationAddress(value);
-                      locationSelected = true;
-                    });
-                    GeoPoint? geoPoints = await _searchLocation(context, value);
-                    context
-                        .read<OSMMapController>()
-                        .tripStops
-                        .setUserDestination(value, geoPoints!);
-                    context
-                        .read<OSMMapController>()
-                        .addMarkers(point: geoPoints, color: Colors.red);
-                    context
-                        .read<OSMMapController>()
-                        .tripStops
-                        .setWalkerPickup(value, geoPoints);
-                  },
-                ),
+                          .tripStops
+                          .setUserDestination(value, geoPoints!);
+                      context
+                          .read<OSMMapController>()
+                          .addMarkers(point: geoPoints, color: Colors.red);
+                      context
+                          .read<OSMMapController>()
+                          .tripStops
+                          .setWalkerPickup(value, geoPoints);
+                    },
+                  );
+                },
                 suggestionsCallback: (pattern) async {
                   return await _getSuggestions(pattern);
                 },
@@ -186,7 +191,7 @@ class _SearchPageState extends State<SearchPage> {
                     title: Text(suggestion),
                   );
                 },
-                onSuggestionSelected: (suggestion) async {
+                onSelected: (suggestion) async {
                   setState(() {
                     destinationAddress = suggestion;
                     context
@@ -194,8 +199,7 @@ class _SearchPageState extends State<SearchPage> {
                         .setDestinationAddress(suggestion);
                     locationSelected = true;
                   });
-                  GeoPoint? geoPoints =
-                      await _searchLocation(context, suggestion);
+                  GeoPoint? geoPoints = await _searchLocation(context, suggestion);
                   context
                       .read<OSMMapController>()
                       .tripStops
