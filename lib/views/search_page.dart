@@ -8,6 +8,8 @@ import 'package:safewalk/controllers/map_controllers.dart';
 import 'package:safewalk/data/trip_stops.dart';
 import './osm_map/osm_map.dart';
 import 'package:safewalk/views/walker/walker_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:safewalk/data/trip_progress.dart';
 
 class SearchPage extends StatefulWidget {

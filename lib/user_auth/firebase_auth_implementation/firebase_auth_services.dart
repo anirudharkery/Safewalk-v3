@@ -24,6 +24,7 @@ class FirebaseAuthService {
           'email': email,
           'username': email.split('@')[0],
           'uid': credential.user!.uid,
+          'role': 'walkee',
         });
 
         User? user = credential.user;

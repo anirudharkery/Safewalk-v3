@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
 import 'package:footer/footer.dart';
 import 'package:safewalk/views/chat_page.dart';
 import 'package:safewalk/views/search_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:footer/footer_view.dart';
 //import 'package:safewalk/views/main_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:safewalk/components/make_call.dart';
 import 'package:safewalk/chat/chat_service.dart';
 import 'package:safewalk/components/user_tile.dart';
 import 'package:safewalk/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 
 class UserHome extends StatefulWidget {
   final String title;
-  final VoidCallback onLogout;
+  //final VoidCallback onLogout;
 
   // Logout Service
-  UserHome({super.key, required this.title, required this.onLogout});
+  UserHome({super.key, required this.title,/* required this.onLogout*/});
+
 
   // Chat Service
   final ChatService chatService = ChatService();
@@ -33,9 +35,7 @@ class _UserHomeState extends State<UserHome> {
   void _logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isLoggedIn', false);
-      widget.onLogout(); // Notify the parent widget
+      //widget.onLogout();  // Notify the parent widget
       Navigator.pushReplacementNamed(context, "/main");
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -132,16 +132,35 @@ class _UserHomeState extends State<UserHome> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Color(0xFFA42035),
         iconTheme: const IconThemeData(color: Colors.white),
         title: Row(
           children: [
-            Image.asset(
-              'assets/images/logo_red.png',
-              height: 40,
-            ), // Assuming you have the SCU logo in assets
-            const SizedBox(width: 10),
-            Text(widget.title),
+            InkWell(
+              onTap: () {
+                // Navigate to the UserHome widget
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserHome(
+                      title: "Welcome to SafeWalk",
+                    ),
+                  ),
+                );
+              },
+              child: Image.asset(
+                'assets/images/logo_new.png',
+                height: 60,
+              ),
+            ),
+            const SizedBox(width: 1),
+            Text(
+              widget.title,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),
@@ -166,7 +185,7 @@ class _UserHomeState extends State<UserHome> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => _onItemTapped(2),
+                      onTap: () => makePhoneCall('+11234567890'),
                       child: Column(
                         children: const [
                           Icon(Icons.call, color: Colors.black, size: 30.0),
@@ -184,7 +203,7 @@ class _UserHomeState extends State<UserHome> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => _onItemTapped(0),
+                      onTap: () => makePhoneCall('+11234567890'),
                       child: Column(
                         children: const [
                           Icon(Icons.leaderboard,
@@ -243,8 +262,7 @@ class _UserHomeState extends State<UserHome> {
               title: const Text('Call'),
               selected: _selectedIndex == 2,
               onTap: () {
-                _onItemTapped(2);
-                Navigator.pop(context);
+                makePhoneCall('+11234567890');
               },
             ),
             ListTile(

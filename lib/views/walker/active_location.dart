@@ -21,7 +21,9 @@ class ActiveLocation extends StatelessWidget {
       ),
       onPressed: () {
         mapcontroller.myLocation().then((value) {
-          context.read<UserLocationProvider>().userLocation = value;
+          if (context.mounted) {
+            context.read<UserLocationProvider>().userLocation = value;
+          }
         });
       },
       child: const Center(child: Icon(Icons.my_location)),
